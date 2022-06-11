@@ -1,0 +1,46 @@
+{
+  "name": "atlas-points",
+  "version": "0.0.1",
+  "description": "Atlas Fellowship Discord bot to track points",
+  "main": "index.js",
+  "repository": "https://github.com/eauwmadison/atlas-points.git",
+  "author": "eeshaan <me@eeshaan.life>",
+  "license": "Unlicense",
+  "scripts": {
+    "start": "node dist/index.js",
+    "build": "swc src -d dist",
+    "dev": "nodemon",
+    "format": "prettier --write .",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@discordjs/builders": "^0.15.0",
+    "@discordjs/rest": "^0.5.0",
+    "discord-api-types": "^0.33.5",
+    "discord.js": "^13.8.0",
+    "dotenv": "^16.0.1",
+    "firebase-admin": "^10.3.0"
+  },
+  "devDependencies": {
+    "@swc-node/register": "^1.5.1",
+    "@swc/cli": "^0.1.57",
+    "@swc/core": "^1.2.197",
+    "@swc/jest": "^0.2.21",
+    "@types/jest": "^28.1.1",
+    "@types/node": "^17.0.42",
+    "@typescript-eslint/eslint-plugin": "^5.27.1",
+    "@typescript-eslint/parser": "^5.27.1",
+    "eslint": "^8.17.0",
+    "eslint-config-prettier": "^8.5.0",
+    "jest": "^28.1.1",
+    "nodemon": "^2.0.16",
+    "prettier": "^2.6.2",
+    "regenerator-runtime": "^0.13.9",
+    "typescript": "^4.7.3"
+  },
+  "peerDependencies": {
+    "@firebase/app-types": "^0.7.0"
+  }
+}

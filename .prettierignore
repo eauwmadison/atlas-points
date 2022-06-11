@@ -1,0 +1,12 @@
+
+# environment
+serviceAccountKey.json
+
+# Node
+node_modules/
+
+# TypeScript
+tsconfig.json
+
+# build artifacts
+dist/

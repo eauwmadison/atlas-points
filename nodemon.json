@@ -1,0 +1,6 @@
+{
+  "watch": false,
+  "ext": "ts,json",
+  "ignore": ["src/**/*.spec.ts", "src/**/*.test.ts"],
+  "exec": "node -r @swc-node/register ./src/index.ts"
+}
