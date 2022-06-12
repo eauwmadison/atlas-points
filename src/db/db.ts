@@ -21,23 +21,19 @@ export async function registerGuildIfNotExists(guild: Guild) {
     const guild_doc_data = await transaction.get(guild_doc);
     if (guild_doc_data.exists) {
       console.log(`already exists: ${guild.id}`);
-      return true;
+      return false;
     } else {
       transaction.create(guild_doc, {});
       console.log(`created: ${guild.id}`);
-      return false;
+      return true;
     }
   });
 
-  if (true || neededToCreate) {
-    // enumerate members
-    const users = await guild.members.list({ cache: false });
-    console.log(users);
-    // give 0 points
-    for (const [a, b] of users) {
-      guild_doc.collection("users").doc(a).create({
-        points: 0
-      });
+  if (neededToCreate) {
+    for (const [_, guildMember] of await guild.members.fetch()) {
+      if (!guildMember.user.bot) {
+        registerUserIfNotExists(guild.id, guildMember.user.id)
+      }
     }
   }
   return neededToCreate;
