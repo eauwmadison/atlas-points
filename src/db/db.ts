@@ -1,5 +1,5 @@
 import { cert, initializeApp, ServiceAccount } from "firebase-admin/app";
-import { getFirestore } from "firebase-admin/firestore";
+import { FieldValue, getFirestore } from "firebase-admin/firestore";
 
 import { Guild } from "discord.js";
 
@@ -38,4 +38,20 @@ export async function registerUserIfNotExists(guildId: string, userId: string) {
   } catch (e) {
     console.log(e);
   }
+}
+
+export async function getUserPoints(guildId: string, userId: string) {
+  const user = await db.collection(`guilds/${guildId}/users`).doc(userId).get();
+
+  return user.data()?.points;
+}
+
+export async function addUserPoints(guildId: string, userId: string, points: number) {
+  const user = await db.collection(`guilds/${guildId}/users`).doc(userId).get();
+
+  // TODO: use FieldValue.increment()
+  await db.collection(`guilds/${guildId}/users`).doc(userId).update({
+    points: user.data()?.points + points
+  });
+  const newPoints = user.data()?.points + points;
 }

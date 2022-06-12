@@ -4,7 +4,7 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import { REST } from "@discordjs/rest";
 import { Routes /*, Snowflake */ } from "discord-api-types/v9";
 
-import { registerGuildIfNotExists, registerUserIfNotExists } from "./db/db";
+import { registerGuildIfNotExists, registerUserIfNotExists, getUserPoints } from "./db/db";
 
 dotenv.config();
 
@@ -82,6 +82,8 @@ client.on("interactionCreate", async (interaction) => {
 
     console.log(user.username);
 
+    console.log(getUserPoints(interaction.guildId!, "some-user-id").then(points => console.log(points)));
+
     const userSummary = new MessageEmbed()
       .setColor("#0B0056")
       .setTitle("Point Summary for " + user.username)
@@ -103,6 +105,38 @@ client.on("interactionCreate", async (interaction) => {
       .setTimestamp(new Date());
 
     await interaction.reply({ embeds: [userSummary] });
+  } else if (interaction.commandName === "add") {
+    const amount = interaction.options.getInteger("amount");
+    const user = interaction.options.getUser("user") || interaction.user;
+
+
+
+  } else if (interaction.commandName === "leaderboard") {
+    const guild = interaction.guild;
+
+    // const users = await
+
+    const guildSummary = new MessageEmbed()
+      .setColor("#0B0056")
+      .setTitle("Leaderboard for " + guild!.name || "current server")
+      .setAuthor({
+        name: "Atlas Points",
+        iconURL:
+          "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png",
+        url: "https://atlasfellowship.org"
+      })
+      .setThumbnail(guild!.iconURL() || "")
+      .addFields(
+        {
+          name: "Member",
+          value: "1",
+          inline: true
+        },
+        { name: "Points", value: "1", inline: true }
+      )
+      .setTimestamp(new Date());
+
+    await interaction.reply({ embeds: [guildSummary] });
   }
 });
 
