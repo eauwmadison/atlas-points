@@ -16,7 +16,6 @@ export async function registerGuildIfNotExists(guild: Guild) {
   console.log(`Attempting to register Guild ${guild.id} in database.`);
 
   const guild_doc = db.doc(`guilds/${guild.id}`);
-  // fetching users currently times out
   const neededToCreate = await db.runTransaction(async (transaction) => {
     const guild_doc_data = await transaction.get(guild_doc);
     if (guild_doc_data.exists) {

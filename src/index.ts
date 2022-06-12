@@ -114,9 +114,29 @@ client.on("interactionCreate", async (interaction) => {
     const amount = interaction.options.getInteger("amount");
     const user = interaction.options.getUser("user") || interaction.user;
 
-    addUserPoints(interaction.guildId!, "some-user-id", amount!).then(() =>
-      interaction.reply(`Added ${amount} points to ${user.username}`)
-    );
+    addUserPoints(interaction.guildId!, user.id, amount!).then(() => {
+      const transactionSummary = new MessageEmbed()
+        .setColor("#0B0056")
+        .setTitle("Transaction Complete")
+        .setAuthor({
+          name: `${user.username}${user.discriminator}`,
+          iconURL: user.avatarURL()!
+        })
+        .setDescription(`${amount} points added to @${user.tag}!`)
+        .addFields({
+          name: "Points",
+          value: "test", // TODO
+          inline: true
+        })
+        .setTimestamp(new Date())
+        .setFooter({
+          text: "Atlas Points",
+          iconURL:
+            "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
+        });
+
+      interaction.reply({ embeds: [transactionSummary] });
+    });
   } else if (interaction.commandName === "leaderboard") {
     const guild = interaction.guild;
 
@@ -143,6 +163,8 @@ client.on("interactionCreate", async (interaction) => {
       .setTimestamp(new Date());
 
     await interaction.reply({ embeds: [guildSummary] });
+  } else if (interaction.commandName === "ping") {
+    await interaction.reply("pong");
   }
 });
 
