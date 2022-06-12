@@ -31,11 +31,8 @@ export async function incrementSingleUserPoints(
   }
 
   // first change the user's points
-<<<<<<< HEAD
-  const amountChange = await incrementUserPoints(interaction.guildId!, user.id, amount);
-=======
+  const amountChange = await incrementUserPoints(interaction.guildId, user.id, amount);
   await incrementUserPoints(interaction.guildId, user.id, amount);
->>>>>>> refs/remotes/origin/main
 
   const amountMagnitude = Math.abs(amountChange);
   const changePhrase = amount > 0 ? "added to" : "removed from";
