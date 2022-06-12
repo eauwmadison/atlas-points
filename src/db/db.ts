@@ -62,6 +62,25 @@ export async function getUserPoints(guildId: string, userId: string) {
   return user.data()!.points;
 }
 
+export async function getRankings(guildId: string) {
+  const users = await db
+    .collection(`guilds/${guildId}/users`)
+    .orderBy("points", "desc")
+    .get()
+    .then((snapshot) => {
+      return snapshot.docs.map((doc) => [doc.id, doc.data()]);
+    });
+
+  return users;
+}
+
+// get the ranking of a user
+export async function getUserRank(guildId: string, userId: string) {
+  const users = await getRankings(guildId);
+
+  return users.findIndex(([id]) => id === userId) + 1;
+}
+
 export async function addUserPoints(
   guildId: string,
   userId: string,
@@ -88,14 +107,12 @@ export async function subtractUserPoints(
     });
 }
 
-export async function donatePoints(
+export async function givePoints(
   guildId: string,
   donorUserId: string,
   recipientUserId: string,
   points: number
 ) {
-  console.log(`donate: src:${donorUserId} dest:${recipientUserId}`);
-
   const donor = db.doc(`guilds/${guildId}/users/${donorUserId}`);
   const recipient = db.doc(`guilds/${guildId}/users/${recipientUserId}`);
 
@@ -103,7 +120,7 @@ export async function donatePoints(
     transaction.update(donor, {
       points: FieldValue.increment(-points)
     });
-    transaction.update(donor, {
+    transaction.update(recipient, {
       points: FieldValue.increment(points)
     });
     return points;

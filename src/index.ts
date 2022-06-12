@@ -10,7 +10,9 @@ import {
   getUserPoints,
   addUserPoints,
   subtractUserPoints,
-  donatePoints
+  givePoints,
+  getRankings,
+  getUserRank
 } from "./db/db";
 
 dotenv.config();
@@ -120,23 +122,25 @@ client.on("interactionCreate", async (interaction) => {
   if (interaction.commandName === "points") {
     const user = interaction.options.getUser("user") || interaction.user;
 
-    getUserPoints(interaction.guildId!, user.id).then((points) => {
-      const userSummary = new MessageEmbed()
-        .setColor("#0B0056")
-        .setTitle(`Point Summary for ${user.username}`)
-        .setThumbnail(user.avatarURL()!)
-        .addFields(
-          { name: "Ranking", value: "#1", inline: true },
-          {
-            name: "Total Points",
-            value: `${points}`,
-            inline: true
-          }
-        )
-        .setTimestamp(new Date());
+    const userSummary = new MessageEmbed()
+      .setColor("#0B0056")
+      .setTitle(`Point Summary for ${user.username}`)
+      .setThumbnail(user.avatarURL()!)
+      .addFields(
+        {
+          name: "Ranking",
+          value: `#${await getUserRank(interaction.guildId!, user.id)}`,
+          inline: true
+        },
+        {
+          name: "Total Points",
+          value: `${await getUserPoints(interaction.guildId!, user.id)}`,
+          inline: true
+        }
+      )
+      .setTimestamp(new Date());
 
-      interaction.reply({ embeds: [userSummary] });
-    });
+    interaction.reply({ embeds: [userSummary] });
   } else if (interaction.commandName === "add") {
     const amount = interaction.options.getInteger("amount");
     const user = interaction.options.getUser("user") || interaction.user;
@@ -173,7 +177,7 @@ client.on("interactionCreate", async (interaction) => {
     const donor = interaction.user;
     const recipient = interaction.options.getUser("recipient")!;
 
-    await donatePoints(interaction.guildId!, donor.id, recipient.id, amount);
+    await givePoints(interaction.guildId!, donor.id, recipient.id, amount);
 
     Promise.all([
       getUserPoints(interaction.guildId!, donor.id),
@@ -246,7 +250,13 @@ client.on("interactionCreate", async (interaction) => {
   } else if (interaction.commandName === "leaderboard") {
     const guild = interaction.guild;
 
-    // const users = await
+    const results = await getRankings(guild!.id);
+
+    const list = results
+      .map((result: any, index) => {
+        return `${index + 1}) <@${result[0]}> — **${result[1].points}** points`;
+      })
+      .join("\n");
 
     const guildSummary = new MessageEmbed()
       .setColor("#0B0056")
@@ -257,15 +267,11 @@ client.on("interactionCreate", async (interaction) => {
           "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png",
         url: "https://atlasfellowship.org"
       })
-      .setThumbnail(guild!.iconURL() || "")
-      .addFields(
-        {
-          name: "Member",
-          value: "1",
-          inline: true
-        },
-        { name: "Points", value: "1", inline: true }
+      .setThumbnail(
+        guild!.iconURL() ||
+          "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
       )
+      .setDescription(list)
       .setTimestamp(new Date());
 
     await interaction.reply({ embeds: [guildSummary] });
