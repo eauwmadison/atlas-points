@@ -85,14 +85,14 @@ const commands = [
 
 // create a new Discord client instance
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
-const rest = new REST({ version: "9" }).setToken(process.env.DISCORD_TOKEN);
+const rest = new REST({ version: "9" }).setToken(process.env.DISCORD_TOKEN!);
 
 // when the client is ready, run this code (only once)
 client.once("ready", async () => {
-  console.log(`Logged in as ${client.user.tag} with ID ${client.user.id}!`);
+  console.log(`Logged in as ${client.user!.tag} with ID ${client.user!.id}!`);
   client.guilds.cache.forEach((guild) => {
     rest
-      .put(Routes.applicationGuildCommands(client.user.id, guild.id), {
+      .put(Routes.applicationGuildCommands(client.user!.id, guild.id), {
         body: commands
       })
       .then(() => console.log("Successfully registered application commands."))
@@ -100,7 +100,7 @@ client.once("ready", async () => {
 
     RegisterGuild(guild);
   });
-  client.user.setActivity("your points!", { type: "WATCHING" });
+  client.user!.setActivity("your points!", { type: "WATCHING" });
 });
 
 client.on("guildMemberAdd", (member) => {
@@ -124,7 +124,7 @@ client.on("interactionCreate", async (interaction) => {
           "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png",
         url: "https://atlasfellowship.org"
       })
-      .setThumbnail(user.avatarURL())
+      .setThumbnail(user.avatarURL()!)
       .addFields(
         {
           name: "Points",
