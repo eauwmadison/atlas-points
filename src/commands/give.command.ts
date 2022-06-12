@@ -38,7 +38,7 @@ module.exports = {
         })
         .setDescription(
           `<@${donor.id}> donated ${amount} point${
-            amount === 1 ? `` : `s`
+            amount === 1 ? "" : "s"
           } to <@${recipient.id}>`
         )
         .addFields(

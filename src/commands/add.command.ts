@@ -36,7 +36,7 @@ module.exports = {
         iconURL: user.avatarURL()!
       })
       .setDescription(
-        `${amount} point${amount === 1 ? `` : `s`} added to <@${
+        `${amount} point${amount === 1 ? "" : "s"} added to <@${
           user.id
         }>'s total!`
       )

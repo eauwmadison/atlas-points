@@ -3,10 +3,7 @@ import path from "path";
 import dotenv from "dotenv";
 import { Client, Collection, Intents } from "discord.js";
 
-import {
-  registerGuildIfNotExists,
-  registerUserIfNotExists
-} from "./db/db";
+import { registerGuildIfNotExists, registerUserIfNotExists } from "./db/db";
 import deployCommands from "./deploy-commands";
 
 dotenv.config();

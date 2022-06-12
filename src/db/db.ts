@@ -11,20 +11,36 @@ initializeApp({
 });
 const db = getFirestore();
 
+export async function registerUserIfNotExists(guildId: string, userId: string) {
+  const userDoc = db.doc(`guilds/${guildId}/users/${userId}`);
+
+  const neededToCreate = await db.runTransaction(async (transaction) => {
+    const userDocData = await transaction.get(userDoc);
+    if (userDocData.exists) {
+      console.log(`already exists: user ${userId} in guild ${guildId}`);
+      return false;
+    }
+    await transaction.create(userDoc, { points: 0 });
+    console.log(`created: user ${userId} in guild ${guildId}`);
+    return true;
+  });
+
+  return neededToCreate;
+}
+
 export async function registerGuildIfNotExists(guild: Guild) {
   console.log(`Attempting to register Guild ${guild.id} in database.`);
 
-  const guild_doc = db.doc(`guilds/${guild.id}`);
+  const guildDoc = db.doc(`guilds/${guild.id}`);
   const neededToCreate = await db.runTransaction(async (transaction) => {
-    const guild_doc_data = await transaction.get(guild_doc);
-    if (guild_doc_data.exists) {
+    const guildDocData = await transaction.get(guildDoc);
+    if (guildDocData.exists) {
       console.log(`already exists: ${guild.id}`);
       return false;
-    } else {
-      transaction.create(guild_doc, {});
-      console.log(`created: ${guild.id}`);
-      return true;
     }
+    transaction.create(guildDoc, {});
+    console.log(`created: ${guild.id}`);
+    return true;
   });
 
   if (neededToCreate) {
@@ -34,24 +50,6 @@ export async function registerGuildIfNotExists(guild: Guild) {
       }
     }
   }
-  return neededToCreate;
-}
-
-export async function registerUserIfNotExists(guildId: string, userId: string) {
-  const user_doc = db.doc(`guilds/${guildId}/users/${userId}`);
-
-  const neededToCreate = await db.runTransaction(async (transaction) => {
-    const user_doc_data = await transaction.get(user_doc);
-    if (user_doc_data.exists) {
-      console.log(`already exists: user ${userId} in guild ${guildId}`);
-      return false;
-    } else {
-      await transaction.create(user_doc, { points: 0 });
-      console.log(`created: user ${userId} in guild ${guildId}`);
-      return true;
-    }
-  });
-
   return neededToCreate;
 }
 
@@ -66,9 +64,7 @@ export async function getRankings(guildId: string) {
     .collection(`guilds/${guildId}/users`)
     .orderBy("points", "desc")
     .get()
-    .then((snapshot) => {
-      return snapshot.docs.map((doc) => [doc.id, doc.data()]);
-    });
+    .then((snapshot) => snapshot.docs.map((doc) => [doc.id, doc.data()]));
 
   return users;
 }

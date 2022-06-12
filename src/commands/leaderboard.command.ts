@@ -7,19 +7,20 @@ module.exports = {
     .setName("leaderboard")
     .setDescription("Display the top 10 members"),
   async execute(interaction: CommandInteraction) {
-    const guild = interaction.guild;
+    const { guild } = interaction;
 
     const results = await getRankings(guild!.id);
 
     const list = results
-      .map((result: any, index) => {
-        return `${index + 1}) <@${result[0]}> — **${result[1].points}** points`;
-      })
+      .map(
+        (result: any, index) =>
+          `${index + 1}) <@${result[0]}> — **${result[1].points}** points`
+      )
       .join("\n");
 
     const guildSummary = new MessageEmbed()
       .setColor("#0B0056")
-      .setTitle("Leaderboard for " + guild!.name || "current server")
+      .setTitle(`Leaderboard for ${guild!.name}` || "current server")
       .setAuthor({
         name: "Atlas Points",
         iconURL:
