@@ -1,6 +1,6 @@
 import { CommandInteraction, Client, MessageEmbed } from "discord.js";
-import { getUserPoints, givePoints } from "../db/db";
 
+import { getUserPoints, givePoints } from "../db/db";
 import { Command } from "../command";
 import { displayErrorMessage } from "../utils";
 
