@@ -86,11 +86,11 @@ export async function donatePoints(
   const donor = db.doc(`guilds/${guildId}/users/${donorUserId}`);
   const recipient = db.doc(`guilds/${guildId}/users/${recipientUserId}`);
 
-  const sentPoints = await db.runTransaction(async transaction => {
-    transaction.update(donor,{
+  const sentPoints = await db.runTransaction(async (transaction) => {
+    transaction.update(donor, {
       points: FieldValue.increment(-points)
     });
-    transaction.update(donor,{
+    transaction.update(donor, {
       points: FieldValue.increment(points)
     });
     return points;
