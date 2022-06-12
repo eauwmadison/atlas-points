@@ -177,29 +177,43 @@ client.on("interactionCreate", async (interaction) => {
 
     await donatePoints(interaction.guildId!, donor.id, recipient.id, amount);
 
-    const transactionSummary = new MessageEmbed()
-      .setColor("#0B0056")
-      .setTitle("Transaction Complete")
-      .setAuthor({
-        name: `${recipient.tag}`,
-        iconURL: donor.avatarURL()!
-      })
-      .setDescription(
-        `<@${donor.id}> donated ${amount} points to <@${recipient.id}>`
-      )
-      .addFields({
-        name: "Points",
-        value: `${amount}`, // TODO
-        inline: true
-      })
-      .setTimestamp(new Date())
-      .setFooter({
-        text: "Atlas Points",
-        iconURL:
-          "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
-      });
+    Promise.all([
+      getUserPoints(interaction.guildId!, donor.id),
+      getUserPoints(interaction.guildId!, recipient.id)
+    ]).then((points) => {
+      const transactionSummary = new MessageEmbed()
+        .setColor("#0B0056")
+        .setTitle("Transaction Complete")
+        .setAuthor({
+          name: `${recipient.tag}`,
+          iconURL: donor.avatarURL()!
+        })
+        .setDescription(
+          `<@${donor.id}> donated ${amount} point${
+            amount === 1 ? `` : `s`
+          } to <@${recipient.id}>`
+        )
+        .addFields(
+          {
+            name: `${donor.username}'s Total`,
+            value: `${points[0]}`,
+            inline: true
+          },
+          {
+            name: `${recipient.username}'s Total`,
+            value: `${points[1]}`,
+            inline: true
+          }
+        )
+        .setTimestamp(new Date())
+        .setFooter({
+          text: "Atlas Points",
+          iconURL:
+            "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
+        });
 
-    interaction.reply({ embeds: [transactionSummary] });
+      interaction.reply({ embeds: [transactionSummary] });
+    });
   } else if (interaction.commandName === "subtract") {
     const amount = interaction.options.getInteger("amount");
     const user = interaction.options.getUser("user") || interaction.user;
