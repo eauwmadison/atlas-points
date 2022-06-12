@@ -1,4 +1,4 @@
-import { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
+import { CommandInteraction, Client, MessageEmbed } from "discord.js";
 import { getRankings } from "../db/db";
 
 import { Command } from "../command";
@@ -7,7 +7,7 @@ const Leaderboard: Command = {
   name: "leaderboard",
   description: "Display rankings for the server",
   type: "CHAT_INPUT",
-  execute: async (_client: Client, interaction: BaseCommandInteraction) => {
+  execute: async (_client: Client, interaction: CommandInteraction) => {
     const { guild } = interaction;
 
     const results = await getRankings(guild!.id);

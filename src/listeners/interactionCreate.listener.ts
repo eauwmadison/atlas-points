@@ -1,14 +1,14 @@
-import { BaseCommandInteraction, Client, Interaction } from "discord.js";
+import { CommandInteraction, Client, Interaction } from "discord.js";
 import { Command } from "../command";
 
 const handleCommand = async (
   client: Client,
   commands: Command[],
-  interaction: BaseCommandInteraction
+  interaction: CommandInteraction
 ): Promise<void> => {
   const command = commands.find((c) => c.name === interaction.commandName);
   if (!command) {
-    interaction.followUp({ content: "An error has occurred" });
+    interaction.followUp({ content: "Could not find specified command" });
     return;
   }
 
@@ -17,7 +17,7 @@ const handleCommand = async (
 
 export default (client: Client, commands: Command[]): void => {
   client.on("interactionCreate", async (interaction: Interaction) => {
-    if (interaction.isCommand() || interaction.isContextMenu()) {
+    if (interaction.isCommand()) {
       await handleCommand(client, commands, interaction);
     }
   });

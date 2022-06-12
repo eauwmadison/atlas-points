@@ -1,4 +1,4 @@
-import { BaseCommandInteraction, Client } from "discord.js";
+import { CommandInteraction, Client } from "discord.js";
 import { displayErrorMessage, incrementSingleUserPoints } from "../utils";
 
 import { Command } from "../command";
@@ -27,7 +27,7 @@ const Subtract: Command = {
       type: "ROLE"
     }
   ],
-  execute: async (_client: Client, interaction: BaseCommandInteraction) => {
+  execute: async (_client: Client, interaction: CommandInteraction) => {
     const amount = interaction.options.getInteger("amount"); // TODO: fix types
     const user = interaction.options.getUser("user") || interaction.user;
 

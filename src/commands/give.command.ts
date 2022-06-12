@@ -1,4 +1,4 @@
-import { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
+import { CommandInteraction, Client, MessageEmbed } from "discord.js";
 import { getUserPoints, givePoints } from "../db/db";
 
 import { Command } from "../command";
@@ -22,7 +22,7 @@ const Give: Command = {
       required: true
     }
   ],
-  execute: async (_client: Client, interaction: BaseCommandInteraction) => {
+  execute: async (_client: Client, interaction: CommandInteraction) => {
     const amount = interaction.options.getInteger("amount")!; // TODO: fix types
     const donor = interaction.user;
     const recipient = interaction.options.getUser("recipient")!;

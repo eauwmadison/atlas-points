@@ -1,5 +1,5 @@
 import {
-  BaseCommandInteraction,
+  CommandInteraction,
   GuildMember,
   MessageEmbed,
   Role,
@@ -13,7 +13,7 @@ import {
 } from "./db/db";
 
 export async function displayErrorMessage(
-  interaction: BaseCommandInteraction,
+  interaction: CommandInteraction,
   description: string
 ) {
   const erorSummary = new MessageEmbed()
@@ -31,7 +31,7 @@ export async function displayErrorMessage(
 }
 
 export async function incrementSingleUserPoints(
-  interaction: BaseCommandInteraction,
+  interaction: CommandInteraction,
   user: User,
   amount: number
 ) {
@@ -69,7 +69,7 @@ export async function incrementSingleUserPoints(
 
 // increment all users in role's points (can be negative!)
 export async function incrementRolePoints(
-  interaction: BaseCommandInteraction,
+  interaction: CommandInteraction,
   role: Role,
   amount: number
 ) {
