@@ -88,7 +88,7 @@ export async function incrementRolePoints(
 
   const usernameList = [];
   for (const [, guildMember] of role.members) {
-    const id = guildMember.user.id;
+    const { id } = guildMember.user;
     const bal = await getUserPoints(interaction.guildId, guildMember.user.id);
     usernameList.push([id, bal]);
   }

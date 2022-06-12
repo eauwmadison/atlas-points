@@ -3,9 +3,10 @@ module.exports = {
     node: true
   },
   parser: "@typescript-eslint/parser",
-  plugins: ["@typescript-eslint"],
+  plugins: ["@typescript-eslint", "node"],
   extends: [
     "airbnb-base",
+    "plugin:import/typescript",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
     "prettier"
@@ -23,7 +24,14 @@ module.exports = {
       { avoidEscape: true, allowTemplateLiterals: false }
     ],
     "import/extensions": "off",
+    "import/no-unresolved": [
+      "error",
+      {
+        ignore: ["firebase-admin/*"]
+      }
+    ],
     "no-console": "off",
+    "node/no-missing-import": "off",
     "no-multi-str": "off"
   },
   settings: {
