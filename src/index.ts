@@ -4,7 +4,11 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import { REST } from "@discordjs/rest";
 import { Routes /*, Snowflake */ } from "discord-api-types/v9";
 
-import { registerGuildIfNotExists, registerUserIfNotExists, getUserPoints } from "./db/db";
+import {
+  registerGuildIfNotExists,
+  registerUserIfNotExists,
+  getUserPoints
+} from "./db/db";
 
 dotenv.config();
 
@@ -70,7 +74,7 @@ client.once("ready", async () => {
   client.user!.setActivity("your points!", { type: "WATCHING" });
 });
 
-client.on("guildMemberAdd", async member => {
+client.on("guildMemberAdd", async (member) => {
   await registerUserIfNotExists(member.guild.id, member.id);
 });
 
@@ -82,7 +86,11 @@ client.on("interactionCreate", async (interaction) => {
 
     console.log(user.username);
 
-    console.log(getUserPoints(interaction.guildId!, "some-user-id").then(points => console.log(points)));
+    console.log(
+      getUserPoints(interaction.guildId!, "some-user-id").then((points) =>
+        console.log(points)
+      )
+    );
 
     const userSummary = new MessageEmbed()
       .setColor("#0B0056")
@@ -108,9 +116,6 @@ client.on("interactionCreate", async (interaction) => {
   } else if (interaction.commandName === "add") {
     const amount = interaction.options.getInteger("amount");
     const user = interaction.options.getUser("user") || interaction.user;
-
-
-
   } else if (interaction.commandName === "leaderboard") {
     const guild = interaction.guild;
 
