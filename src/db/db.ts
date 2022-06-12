@@ -81,12 +81,19 @@ export async function incrementUserPoints(
   userId: string,
   points: number
 ) {
-  await db
-    .collection(`guilds/${guildId}/users`)
-    .doc(userId)
-    .update({
-      points: FieldValue.increment(points)
-    });
+  const recipient = db.doc(`guilds/${guildId}/users/${userId}`);
+
+  const pointsIncremented = await db.runTransaction(async (transaction) => {
+    const recipient_data = await transaction.get(recipient);
+
+    const old_points: number = recipient_data.get('points')
+    const new_points = old_points + points < 0 ? 0 : old_points + points;
+
+    transaction.update(recipient, { points: new_points });
+    return new_points - old_points;
+  });
+
+  return pointsIncremented;
 }
 
 export async function givePoints(
@@ -99,13 +106,18 @@ export async function givePoints(
   const recipient = db.doc(`guilds/${guildId}/users/${recipientUserId}`);
 
   const sentPoints = await db.runTransaction(async (transaction) => {
+    const donor_points_old: number = (await transaction.get(donor)).get('points');
+    const recipient_points_old: number = (await transaction.get(recipient)).get('points');
+
+    const points_given = points > donor_points_old ? donor_points_old : points;
+
     transaction.update(donor, {
-      points: FieldValue.increment(-points)
+      points: donor_points_old - points_given
     });
     transaction.update(recipient, {
-      points: FieldValue.increment(points)
+      points: recipient_points_old + points_given
     });
-    return points;
+    return points_given;
   });
 
   return sentPoints;

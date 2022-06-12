@@ -34,9 +34,9 @@ export async function incrementSingleUserPoints(
   amount: number
 ) {
   // first change the user's points
-  await incrementUserPoints(interaction.guildId!, user.id, amount);
+  const amountChange = await incrementUserPoints(interaction.guildId!, user.id, amount);
 
-  const amountMagnitude = Math.abs(amount);
+  const amountMagnitude = Math.abs(amountChange);
   const changePhrase = amount > 0 ? "added to" : "removed from";
 
   const transactionSummary = new MessageEmbed()

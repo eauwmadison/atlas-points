@@ -30,11 +30,13 @@ const Give: Command = {
 
     if (recipient === null) {
       await displayErrorMessage(interaction, "Must specify recipient");
+    } else if(recipient.id === donor.id) {
+      await displayErrorMessage(interaction, "Cannot give to yourself");
     } else {
-      await givePoints(interaction.guildId!, donor.id, recipient.id, amount);
+      const amountGiven = await givePoints(interaction.guildId!, donor.id, recipient.id, amount);
 
       const donorPoints = await getUserPoints(interaction.guildId!, donor.id);
-      const recipientPoints = getUserPoints(interaction.guildId!, recipient.id);
+      const recipientPoints = await getUserPoints(interaction.guildId!, recipient.id);
 
       const transactionSummary = new MessageEmbed()
         .setColor("#0B0056")
@@ -44,7 +46,7 @@ const Give: Command = {
           iconURL: donor.avatarURL()!
         })
         .setDescription(
-          `<@${donor.id}> donated ${amount} point${amount === 1 ? "" : "s"
+          `<@${donor.id}> donated ${amountGiven} point${amountGiven  === 1 ? "" : "s"
           } to <@${recipient.id}>`
         )
         .addFields(
@@ -55,7 +57,7 @@ const Give: Command = {
           },
           {
             name: `${recipient.username}'s New Balance`,
-            value: `${recipient}`,
+            value: `${recipientPoints}`,
             inline: true
           }
         )
