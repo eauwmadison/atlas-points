@@ -151,9 +151,9 @@ client.on("interactionCreate", async (interaction) => {
             iconURL: user.avatarURL()!
           })
           .setDescription(
-            `${amount}` + "point" + (amount === 1)
-              ? ""
-              : "s" + ` added to <@${user.id}>!`
+            `${amount} point${amount === 1 ? `` : `s`} added to <@${
+              user.id
+            }>'s total!`
           )
           .addFields({
             name: "Total Points",
@@ -185,7 +185,7 @@ client.on("interactionCreate", async (interaction) => {
         iconURL: donor.avatarURL()!
       })
       .setDescription(
-        `<@${donor.id}> donated ${amount} points to <@${recipient.tag}>`
+        `<@${donor.id}> donated ${amount} points to <@${recipient.id}>`
       )
       .addFields({
         name: "Points",
@@ -214,9 +214,9 @@ client.on("interactionCreate", async (interaction) => {
             iconURL: user.avatarURL()!
           })
           .setDescription(
-            `${amount}` + "point" + (amount === 1)
-              ? ""
-              : "s" + ` subtracted from <@${user.id}>!`
+            `${amount} point${amount === 1 ? `` : `s`} removed from <@${
+              user.id
+            }>'s total!`
           )
           .addFields({
             name: "Total Points",
