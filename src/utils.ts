@@ -6,7 +6,7 @@ import {
   User
 } from "discord.js";
 
-import { incrementUserPoints, getUserPoints } from "./db/db";
+import { incrementUserPoints, getUserPoints, registerUserIfNotExists } from "./db/db";
 
 export async function displayErrorMessage(
   interaction: CommandInteraction,
@@ -26,12 +26,7 @@ export async function displayErrorMessage(
   await interaction.reply({ embeds: [erorSummary] });
 }
 
-// increment user points by a specified amount (can be negative!)
-export async function incrementSingleUserPoints(
-  interaction: CommandInteraction,
-  user: User,
-  amount: number
-) {
+export async function incrementSingleUserPoints(interaction: CommandInteraction, user: User, amount: number) {
   // first change the user's points
   await incrementUserPoints(interaction.guildId!, user.id, amount);
 
@@ -46,9 +41,7 @@ export async function incrementSingleUserPoints(
       iconURL: user.avatarURL()!
     })
     .setDescription(
-      `${amountMagnitude} point${
-        amountMagnitude === 1 ? "" : "s"
-      } {changePhrase} <@${user.id}>'s total!`
+      `${amountMagnitude} point${amountMagnitude === 1 ? "" : "s"} ${changePhrase} <@${user.id}>'s total!`
     )
     .addFields({
       name: `New Balance for @${user.id}`,
@@ -61,7 +54,38 @@ export async function incrementSingleUserPoints(
       iconURL:
         "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
     });
+  await interaction.reply({ embeds: [transactionSummary] });
 }
 
 // increment all users in role's points (can be negative!)
-export async function incrementRolePoints(role: Role) {}
+export async function incrementRolePoints(interaction: CommandInteraction, role: Role, amount: number) {
+  for (const [, guildMember] of role.members) {
+    // first change the user's points
+    await incrementUserPoints(interaction.guildId!, guildMember.user.id, amount);
+  }
+
+  const amountMagnitude = Math.abs(amount);
+  const changePhrase = amount > 0 ? "added to" : "removed from";
+
+  const usernameList = [];
+  for(const [, guildMember] of role.members) {
+      usernameList.push(guildMember.user.tag);
+  }
+
+  const userListStr  = usernameList.map((x, i) => `${i}) ${x}`).join('\n');
+
+  const transactionSummary = new MessageEmbed()
+    .setColor("#0B0056")
+    .setTitle("Transaction Complete")
+    .setDescription(
+      `${amountMagnitude} point${amountMagnitude === 1 ? "" : "s"} ${changePhrase}:\n${userListStr}`
+    )
+    .setTimestamp(new Date())
+    .setFooter({
+      text: "Atlas Points",
+      iconURL:
+        "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
+    });
+
+  await interaction.reply({ embeds: [transactionSummary] });
+}
