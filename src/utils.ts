@@ -1,6 +1,5 @@
 import {
   CommandInteraction,
-  GuildMember,
   MessageEmbed,
   Role,
   User
@@ -8,15 +7,14 @@ import {
 
 import {
   incrementUserPoints,
-  getUserPoints,
-  registerUserIfNotExists
+  getUserPoints
 } from "./db/db";
 
 export async function displayErrorMessage(
   interaction: CommandInteraction,
   description: string
 ) {
-  const erorSummary = new MessageEmbed()
+  const errorSummary = new MessageEmbed()
     .setColor("#0B0056")
     .setTitle("Error!")
     .setDescription(description)
@@ -27,7 +25,7 @@ export async function displayErrorMessage(
         "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
     });
 
-  await interaction.reply({ embeds: [erorSummary] });
+  await interaction.reply({ embeds: [errorSummary] });
 }
 
 export async function incrementSingleUserPoints(
@@ -73,6 +71,9 @@ export async function incrementRolePoints(
   role: Role,
   amount: number
 ) {
+  // fetch all
+  await role.guild.members.fetch({force:true});
+
   for (const [, guildMember] of role.members) {
     // first change the user's points
     await incrementUserPoints(
@@ -87,10 +88,12 @@ export async function incrementRolePoints(
 
   const usernameList = [];
   for (const [, guildMember] of role.members) {
-    usernameList.push(guildMember.user.tag);
+    const id = guildMember.user.id;
+    const bal =  await getUserPoints(interaction.guildId!, guildMember.user.id);
+    usernameList.push([id, bal]);
   }
 
-  const userListStr = usernameList.map((x, i) => `${i}) ${x}`).join("\n");
+  const userListStr = usernameList.map(([id, bal], i) => `${i+1}) <@${id}> (New Balance: ${bal})`).join("\n");
 
   const transactionSummary = new MessageEmbed()
     .setColor("#0B0056")
