@@ -30,10 +30,7 @@ const Points: Command = {
     const userSummary = new MessageEmbed()
       .setColor("#0B0056")
       .setTitle(`Point Summary for ${user.username}`)
-      .setThumbnail(
-        user.avatarURL() ||
-          "https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png"
-      )
+      .setThumbnail(user.avatarURL() || user.defaultAvatarURL)
       .addFields(
         {
           name: "Ranking",

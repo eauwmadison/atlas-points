@@ -46,9 +46,7 @@ export async function incrementSingleUserPoints(
     .setTitle("Transaction Complete")
     .setAuthor({
       name: `${user.tag}`,
-      iconURL:
-        user.avatarURL() ||
-        "https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png"
+      iconURL: user.avatarURL() || user.defaultAvatarURL
     })
     .setDescription(
       `${amountMagnitude} point${
