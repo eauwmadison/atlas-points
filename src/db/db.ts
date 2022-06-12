@@ -76,7 +76,7 @@ export async function getUserRank(guildId: string, userId: string) {
   return users.findIndex(([id]) => id === userId) + 1;
 }
 
-export async function addUserPoints(
+export async function incrementUserPoints(
   guildId: string,
   userId: string,
   points: number
@@ -86,19 +86,6 @@ export async function addUserPoints(
     .doc(userId)
     .update({
       points: FieldValue.increment(points)
-    });
-}
-
-export async function subtractUserPoints(
-  guildId: string,
-  userId: string,
-  points: number
-) {
-  await db
-    .collection(`guilds/${guildId}/users`)
-    .doc(userId)
-    .update({
-      points: FieldValue.increment(-points)
     });
 }
 

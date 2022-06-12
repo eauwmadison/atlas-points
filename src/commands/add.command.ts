@@ -1,6 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { CommandInteraction, MessageEmbed } from "discord.js";
-import { getUserPoints, addUserPoints } from "../db/db";
+import { displayErrorMessage, incrementSingleUserPoints } from "../utils";
+
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -26,32 +27,10 @@ module.exports = {
     const amount = interaction.options.getInteger("amount");
     const user = interaction.options.getUser("user") || interaction.user;
 
-    await addUserPoints(interaction.guildId!, user.id, amount!);
-
-    const transactionSummary = new MessageEmbed()
-      .setColor("#0B0056")
-      .setTitle("Transaction Complete")
-      .setAuthor({
-        name: `${user.tag}`,
-        iconURL: user.avatarURL()!
-      })
-      .setDescription(
-        `${amount} point${amount === 1 ? "" : "s"} added to <@${
-          user.id
-        }>'s total!`
-      )
-      .addFields({
-        name: "Total Points",
-        value: `${await getUserPoints(interaction.guildId!, user.id)}`,
-        inline: true
-      })
-      .setTimestamp(new Date())
-      .setFooter({
-        text: "Atlas Points",
-        iconURL:
-          "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
-      });
-
-    interaction.reply({ embeds: [transactionSummary] });
+    if (amount === null || amount < 0 || amount > 1024 ** 3) {
+      await displayErrorMessage(interaction, "amount must be greater than 0 and less than 2^30");
+    } else {
+      await incrementSingleUserPoints(interaction, user, amount);
+    }
   }
 };

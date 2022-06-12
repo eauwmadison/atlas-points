@@ -16,11 +16,14 @@ const client = new Client({
 client.commands = new Collection();
 
 const commandsPath = path.join(__dirname, "commands");
+console.log(commandsPath);
 const commandFiles = fs
   .readdirSync(commandsPath)
-  .filter((file) => file.endsWith(".command.ts"));
+  .filter((file) => file.endsWith(".command.ts") || file.endsWith(".command.js"));
+console.log("Command Files:", commandFiles);
 
 for (const file of commandFiles) {
+  console.log(`registering command from ${file}`);
   const filePath = path.join(commandsPath, file);
   const command = require(filePath);
   client.commands.set(command.data.name, command);
