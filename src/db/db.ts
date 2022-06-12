@@ -54,7 +54,7 @@ export async function registerGuildIfNotExists(guild: Guild) {
 export async function getUserPoints(guildId: string, userId: string) {
   const user = await db.collection(`guilds/${guildId}/users`).doc(userId).get();
 
-  return user.data()!.points;
+  return user.data()?.points || "Could not find user";
 }
 
 export async function getRankings(guildId: string) {

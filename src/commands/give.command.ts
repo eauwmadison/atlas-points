@@ -24,9 +24,14 @@ const Give: Command = {
     }
   ],
   execute: async (_client: Client, interaction: CommandInteraction) => {
-    const amount = interaction.options.getInteger("amount")!;
+    const amount = interaction.options.getInteger("amount");
     const donor = interaction.user;
     const recipient = interaction.options.getUser("recipient");
+
+    if (!amount) {
+      await displayErrorMessage(interaction, "Please specify an amount");
+      return;
+    }
 
     if (interaction.guildId === null) {
       await displayErrorMessage(interaction, "Cannot give points in a DM");
@@ -53,7 +58,7 @@ const Give: Command = {
         .setTitle("Transaction Complete")
         .setAuthor({
           name: `${recipient.tag}`,
-          iconURL: donor.avatarURL()!
+          iconURL: donor.avatarURL() || donor.defaultAvatarURL
         })
         .setDescription(
           `<@${donor.id}> donated ${amountGiven} point${
