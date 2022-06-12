@@ -133,7 +133,7 @@ client.on("interactionCreate", async (interaction) => {
       .setDescription(`${amount} points added to @${user.tag}!`)
       .addFields({
         name: "Points",
-        value: "test", // TODO
+        value: `${amount}`,
         inline: true
       })
       .setTimestamp(new Date())
