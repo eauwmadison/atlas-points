@@ -26,10 +26,7 @@ export async function incrementSingleUserPoints(
   amount: number
 ) {
   if (!interaction.guildId) {
-    await displayErrorMessage(
-      interaction,
-      "You can't give points in a DM!"
-    );
+    await displayErrorMessage(interaction, "You can't give points in a DM!");
     return;
   }
 
@@ -44,7 +41,9 @@ export async function incrementSingleUserPoints(
     .setTitle("Transaction Complete")
     .setAuthor({
       name: `${user.tag}`,
-      iconURL: user.avatarURL() || "https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png"
+      iconURL:
+        user.avatarURL() ||
+        "https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png"
     })
     .setDescription(
       `${amountMagnitude} point${
@@ -72,10 +71,7 @@ export async function incrementRolePoints(
   amount: number
 ) {
   if (!interaction.guildId) {
-    await displayErrorMessage(
-      interaction,
-      "You can't give points in a DM!"
-    );
+    await displayErrorMessage(interaction, "You can't give points in a DM!");
     return;
   }
 
@@ -84,11 +80,7 @@ export async function incrementRolePoints(
 
   for (const [, guildMember] of role.members) {
     // first change the user's points
-    await incrementUserPoints(
-      interaction.guildId,
-      guildMember.user.id,
-      amount
-    );
+    await incrementUserPoints(interaction.guildId, guildMember.user.id, amount);
   }
 
   const amountMagnitude = Math.abs(amount);

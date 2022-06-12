@@ -6,12 +6,12 @@ import { displayErrorMessage } from "../utils";
 
 const Give: Command = {
   name: "give",
-  description: "Send points to another user",
+  description: "transfer points to another user",
   type: "CHAT_INPUT",
   options: [
     {
       name: "amount",
-      description: "the number of points to add",
+      description: "the number of points to give",
       type: "INTEGER",
       required: true,
       minValue: 1
@@ -29,10 +29,7 @@ const Give: Command = {
     const recipient = interaction.options.getUser("recipient");
 
     if (!interaction.guildId) {
-      await displayErrorMessage(
-        interaction,
-        "You can't give points in a DM!"
-      );
+      await displayErrorMessage(interaction, "You can't give points in a DM!");
       return;
     }
 
@@ -63,12 +60,12 @@ const Give: Command = {
         )
         .addFields(
           {
-            name: `${donor.username}'s Total`,
+            name: `${donor.username}'s New Balance`,
             value: `${points[0]}`,
             inline: true
           },
           {
-            name: `${recipient.username}'s Total`,
+            name: `${recipient.username}'s New Balance`,
             value: `${points[1]}`,
             inline: true
           }
