@@ -1,4 +1,4 @@
-import { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
+import { CommandInteraction, Client, MessageEmbed } from "discord.js";
 import { getUserRank, getUserPoints } from "../db/db";
 
 import { Command } from "../command";
@@ -19,7 +19,7 @@ const Points: Command = {
       type: "ROLE"
     }
   ],
-  execute: async (_client: Client, interaction: BaseCommandInteraction) => {
+  execute: async (_client: Client, interaction: CommandInteraction) => {
     const user = interaction.options.getUser("user") || interaction.user;
 
     const userSummary = new MessageEmbed()

@@ -1,6 +1,5 @@
 import {
-  BaseCommandInteraction,
-  GuildMember,
+  CommandInteraction,
   MessageEmbed,
   Role,
   User
@@ -8,15 +7,14 @@ import {
 
 import {
   incrementUserPoints,
-  getUserPoints,
-  registerUserIfNotExists
+  getUserPoints
 } from "./db/db";
 
 export async function displayErrorMessage(
-  interaction: BaseCommandInteraction,
+  interaction: CommandInteraction,
   description: string
 ) {
-  const erorSummary = new MessageEmbed()
+  const errorSummary = new MessageEmbed()
     .setColor("#0B0056")
     .setTitle("Error!")
     .setDescription(description)
@@ -27,11 +25,11 @@ export async function displayErrorMessage(
         "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
     });
 
-  await interaction.reply({ embeds: [erorSummary] });
+  await interaction.reply({ embeds: [errorSummary] });
 }
 
 export async function incrementSingleUserPoints(
-  interaction: BaseCommandInteraction,
+  interaction: CommandInteraction,
   user: User,
   amount: number
 ) {
@@ -69,7 +67,7 @@ export async function incrementSingleUserPoints(
 
 // increment all users in role's points (can be negative!)
 export async function incrementRolePoints(
-  interaction: BaseCommandInteraction,
+  interaction: CommandInteraction,
   role: Role,
   amount: number
 ) {

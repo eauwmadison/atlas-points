@@ -1,4 +1,4 @@
-import { BaseCommandInteraction, Client, Role } from "discord.js";
+import { CommandInteraction, Client, Role } from "discord.js";
 import { displayErrorMessage, incrementRolePoints, incrementSingleUserPoints } from "../utils";
 
 import { Command } from "../command";
@@ -27,10 +27,10 @@ const Add: Command = {
       type: "ROLE"
     }
   ],
-  execute: async (_client: Client, interaction: BaseCommandInteraction) => {
-    const amount = interaction.options.getInteger("amount") as number | null; // TODO: fix types
-    const user = interaction.options.getUser("user");
-    const role = interaction.options.getRole("role") as Role | null;
+  execute: async (_client: Client, interaction: CommandInteraction) => {
+    const amount = interaction.options.getInteger("amount"); // TODO: fix types
+    const user = interaction.options.getUser("user") || interaction.user;
+    const role = interaction.options.getRole("role") as Role;
 
     if (amount === null || amount < 0 || amount > 1024 ** 3) {
       await displayErrorMessage(interaction, "amount must be greater than 0 and less than 2^30");
