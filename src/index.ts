@@ -128,8 +128,8 @@ client.on("interactionCreate", async (interaction) => {
         .addFields(
           { name: "Ranking", value: "#1", inline: true },
           {
-            name: "Points",
-            value: points.toString(),
+            name: "Total Points",
+            value: `${points}`,
             inline: true
           }
         )
@@ -137,63 +137,6 @@ client.on("interactionCreate", async (interaction) => {
 
       interaction.reply({ embeds: [userSummary] });
     });
-  } else if (interaction.commandName === "add") {
-    const amount = interaction.options.getInteger("amount");
-    const user = interaction.options.getUser("user") || interaction.user;
-
-    await addUserPoints(interaction.guildId!, user.id, amount!);
-
-    const transactionSummary = new MessageEmbed()
-      .setColor("#0B0056")
-      .setTitle("Transaction Complete")
-      .setAuthor({
-        name: `${user.username}${user.discriminator}`,
-        iconURL: user.avatarURL()!
-      })
-      .setDescription(`${amount} points added to @${user.tag}!`)
-      .addFields({
-        name: "Points",
-        value: `${amount}`,
-        inline: true
-      })
-      .setTimestamp(new Date())
-      .setFooter({
-        text: "Atlas Points",
-        iconURL:
-          "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
-      });
-
-    interaction.reply({ embeds: [transactionSummary] });
-  } else if (interaction.commandName === "give") {
-    const amount = interaction.options.getInteger("amount")!;
-    const donor = interaction.user;
-    const recipient = interaction.options.getUser("recipient")!;
-
-    await donatePoints(interaction.guildId!, donor.id, recipient.id, amount);
-
-    const transactionSummary = new MessageEmbed()
-      .setColor("#0B0056")
-      .setTitle("Transaction Complete")
-      .setAuthor({
-        name: `${recipient.tag}`,
-        iconURL: donor.avatarURL()!
-      })
-      .setDescription(
-        `<@${donor.id}> donated ${amount} points to <@${recipient.tag}>`
-      )
-      .addFields({
-        name: "Points",
-        value: `${amount}`, // TODO
-        inline: true
-      })
-      .setTimestamp(new Date())
-      .setFooter({
-        text: "Atlas Points",
-        iconURL:
-          "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
-      });
-
-    interaction.reply({ embeds: [transactionSummary] });
   } else if (interaction.commandName === "add") {
     const amount = interaction.options.getInteger("amount");
     const user = interaction.options.getUser("user") || interaction.user;
@@ -227,6 +170,36 @@ client.on("interactionCreate", async (interaction) => {
         interaction.reply({ embeds: [transactionSummary] });
       })
     );
+  } else if (interaction.commandName === "give") {
+    const amount = interaction.options.getInteger("amount")!;
+    const donor = interaction.user;
+    const recipient = interaction.options.getUser("recipient")!;
+
+    await donatePoints(interaction.guildId!, donor.id, recipient.id, amount);
+
+    const transactionSummary = new MessageEmbed()
+      .setColor("#0B0056")
+      .setTitle("Transaction Complete")
+      .setAuthor({
+        name: `${recipient.tag}`,
+        iconURL: donor.avatarURL()!
+      })
+      .setDescription(
+        `<@${donor.id}> donated ${amount} points to <@${recipient.tag}>`
+      )
+      .addFields({
+        name: "Points",
+        value: `${amount}`, // TODO
+        inline: true
+      })
+      .setTimestamp(new Date())
+      .setFooter({
+        text: "Atlas Points",
+        iconURL:
+          "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
+      });
+
+    interaction.reply({ embeds: [transactionSummary] });
   } else if (interaction.commandName === "subtract") {
     const amount = interaction.options.getInteger("amount");
     const user = interaction.options.getUser("user") || interaction.user;
