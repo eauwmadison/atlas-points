@@ -100,16 +100,10 @@ client.on("interactionCreate", async (interaction) => {
   if (interaction.commandName === "points") {
     const user = interaction.options.getUser("user") || interaction.user;
 
-    getUserPoints(interaction.guildId!, "some-user-id").then((points) => {
+    getUserPoints(interaction.guildId!, user.id).then((points) => {
       const userSummary = new MessageEmbed()
         .setColor("#0B0056")
-        .setTitle("Point Summary for " + user.username)
-        .setAuthor({
-          name: "Atlas Points",
-          iconURL:
-            "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png",
-          url: "https://atlasfellowship.org"
-        })
+        .setTitle(`Point Summary for ${user.username}`)
         .setThumbnail(user.avatarURL()!)
         .addFields(
           { name: "Ranking", value: "#1", inline: true },
@@ -155,16 +149,18 @@ client.on("interactionCreate", async (interaction) => {
     const donor = interaction.user;
     const recipient = interaction.options.getUser("recipient")!;
 
-    await donatePoints(interaction.guildId!, donor.id, recipient.id, amount)
+    await donatePoints(interaction.guildId!, donor.id, recipient.id, amount);
 
     const transactionSummary = new MessageEmbed()
       .setColor("#0B0056")
       .setTitle("Transaction Complete")
       .setAuthor({
-        name: `${donor.username}${donor.discriminator}`,
+        name: `${recipient.tag}`,
         iconURL: donor.avatarURL()!
       })
-      .setDescription(`${amount} points were donated by @${donor.tag} to ${recipient.tag}`)
+      .setDescription(
+        `<@${donor.id}> donated ${amount} points to <@${recipient.tag}>`
+      )
       .addFields({
         name: "Points",
         value: `${amount}`, // TODO
@@ -178,6 +174,35 @@ client.on("interactionCreate", async (interaction) => {
       });
 
     interaction.reply({ embeds: [transactionSummary] });
+  } else if (interaction.commandName === "add") {
+    const amount = interaction.options.getInteger("amount");
+    const user = interaction.options.getUser("user") || interaction.user;
+
+    addUserPoints(interaction.guildId!, user.id, amount!).then(() =>
+      getUserPoints(interaction.guildId!, user.id).then((points) => {
+        const transactionSummary = new MessageEmbed()
+          .setColor("#0B0056")
+          .setTitle("Transaction Complete")
+          .setAuthor({
+            name: `${user.tag}`,
+            iconURL: user.avatarURL()!
+          })
+          .setDescription(`${amount} points added to <@${user.id}>!`)
+          .addFields({
+            name: "Total Points",
+            value: points.toString(),
+            inline: true
+          })
+          .setTimestamp(new Date())
+          .setFooter({
+            text: "Atlas Points",
+            iconURL:
+              "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
+          });
+
+        interaction.reply({ embeds: [transactionSummary] });
+      })
+    );
   } else if (interaction.commandName === "leaderboard") {
     const guild = interaction.guild;
 
