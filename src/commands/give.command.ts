@@ -24,7 +24,7 @@ const Give: Command = {
     }
   ],
   execute: async (_client: Client, interaction: CommandInteraction) => {
-    const amount = interaction.options.getInteger("amount")!; // TODO: fix types
+    const amount = interaction.options.getInteger("amount")!;
     const donor = interaction.user;
     const recipient = interaction.options.getUser("recipient");
 
