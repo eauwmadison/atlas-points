@@ -9,6 +9,7 @@ import {
   registerUserIfNotExists,
   getUserPoints,
   addUserPoints,
+  subtractUserPoints,
   donatePoints
 } from "./db/db";
 
@@ -40,6 +41,25 @@ const commands = [
       option
         .setName("amount")
         .setDescription("the number of points to add")
+        .setMinValue(0)
+        .setRequired(true)
+    )
+    .addUserOption((option) =>
+      option.setName("user").setDescription("the user to target")
+    )
+    .addRoleOption((option) =>
+      option.setName("role").setDescription("the role to target")
+    ),
+  new SlashCommandBuilder()
+    .setName("subtract")
+    .setDescription(
+      "Moderators can subtract points from a user, role, or the entire server"
+    )
+    .addIntegerOption((option) =>
+      option
+        .setName("amount")
+        .setDescription("the number of points to subtract")
+        .setMinValue(0)
         .setRequired(true)
     )
     .addUserOption((option) =>
@@ -187,10 +207,47 @@ client.on("interactionCreate", async (interaction) => {
             name: `${user.tag}`,
             iconURL: user.avatarURL()!
           })
-          .setDescription(`${amount} points added to <@${user.id}>!`)
+          .setDescription(
+            `${amount}` + "point" + (amount === 1)
+              ? ""
+              : "s" + ` added to <@${user.id}>!`
+          )
           .addFields({
             name: "Total Points",
-            value: points.toString(),
+            value: `${points}`,
+            inline: true
+          })
+          .setTimestamp(new Date())
+          .setFooter({
+            text: "Atlas Points",
+            iconURL:
+              "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
+          });
+
+        interaction.reply({ embeds: [transactionSummary] });
+      })
+    );
+  } else if (interaction.commandName === "subtract") {
+    const amount = interaction.options.getInteger("amount");
+    const user = interaction.options.getUser("user") || interaction.user;
+
+    subtractUserPoints(interaction.guildId!, user.id, amount!).then(() =>
+      getUserPoints(interaction.guildId!, user.id).then((points) => {
+        const transactionSummary = new MessageEmbed()
+          .setColor("#0B0056")
+          .setTitle("Transaction Complete")
+          .setAuthor({
+            name: `${user.tag}`,
+            iconURL: user.avatarURL()!
+          })
+          .setDescription(
+            `${amount}` + "point" + (amount === 1)
+              ? ""
+              : "s" + ` subtracted from <@${user.id}>!`
+          )
+          .addFields({
+            name: "Total Points",
+            value: `${points}`,
             inline: true
           })
           .setTimestamp(new Date())

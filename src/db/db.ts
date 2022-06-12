@@ -75,6 +75,19 @@ export async function addUserPoints(
     });
 }
 
+export async function subtractUserPoints(
+  guildId: string,
+  userId: string,
+  points: number
+) {
+  await db
+    .collection(`guilds/${guildId}/users`)
+    .doc(userId)
+    .update({
+      points: FieldValue.increment(-points)
+    });
+}
+
 export async function donatePoints(
   guildId: string,
   donorUserId: string,
