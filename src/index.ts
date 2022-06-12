@@ -70,8 +70,8 @@ client.once("ready", async () => {
   client.user!.setActivity("your points!", { type: "WATCHING" });
 });
 
-client.on("guildMemberAdd", (member) => {
-  registerUserIfNotExists(member.guild.id, member.id);
+client.on("guildMemberAdd", async member => {
+  await registerUserIfNotExists(member.guild.id, member.id);
 });
 
 client.on("interactionCreate", async (interaction) => {
