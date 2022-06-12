@@ -28,9 +28,9 @@ const Subtract: Command = {
     }
   ],
   execute: async (_client: Client, interaction: CommandInteraction) => {
-    const amount = interaction.options.getInteger("amount"); // TODO: fix types
-    const user = interaction.options.getUser("user") || interaction.user;
-    const role = interaction.options.getRole("role") as Role;
+    const amount = interaction.options.getInteger("amount");
+    const user = interaction.options.getUser("user");
+    const role = interaction.options.getRole("role") as Role | null;
 
     if (amount === null || amount < 0 || amount > 1024 ** 3) {
       await displayErrorMessage(interaction, "amount must be greater than 0 and less than 2^30"
