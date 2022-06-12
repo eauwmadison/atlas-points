@@ -24,49 +24,42 @@ const Give: Command = {
     }
   ],
   execute: async (_client: Client, interaction: CommandInteraction) => {
-    const amount = interaction.options.getInteger("amount");
+    const amount = interaction.options.getInteger("amount")!;
     const donor = interaction.user;
     const recipient = interaction.options.getUser("recipient");
 
-    if (!interaction.guildId) {
-      await displayErrorMessage(interaction, "You can't give points in a DM!");
-      return;
-    }
+    if (interaction.guildId === null) {
+      await displayErrorMessage(interaction, "Cannot give points in a DM");
+    } else if (recipient === null) {
+      await displayErrorMessage(interaction, "Must specify recipient");
+    } else if(recipient.id === donor.id) {
+      await displayErrorMessage(interaction, "Cannot give to yourself");
+    } else {
+      const amountGiven = await givePoints(interaction.guildId, donor.id, recipient.id, amount);
 
-    if (!donor || !recipient) {
-      await interaction.reply("You must specify a donor and a recipient!");
-      return;
-    }
+      const donorPoints = await getUserPoints(interaction.guildId, donor.id);
+      const recipientPoints = await getUserPoints(interaction.guildId, recipient.id);
 
-    await givePoints(interaction.guildId, donor.id, recipient.id, amount || 0);
-
-    Promise.all([
-      getUserPoints(interaction.guildId, donor.id),
-      getUserPoints(interaction.guildId, recipient.id)
-    ]).then((points) => {
       const transactionSummary = new MessageEmbed()
         .setColor("#0B0056")
         .setTitle("Transaction Complete")
         .setAuthor({
           name: `${recipient.tag}`,
-          iconURL:
-            donor.avatarURL() ||
-            "https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png"
+          iconURL: donor.avatarURL()!
         })
         .setDescription(
-          `<@${donor.id}> donated ${amount} point${
-            amount === 1 ? "" : "s"
+          `<@${donor.id}> donated ${amountGiven} point${amountGiven  === 1 ? "" : "s"
           } to <@${recipient.id}>`
         )
         .addFields(
           {
             name: `${donor.username}'s New Balance`,
-            value: `${points[0]}`,
+            value: `${donorPoints}`,
             inline: true
           },
           {
             name: `${recipient.username}'s New Balance`,
-            value: `${points[1]}`,
+            value: `${recipientPoints}`,
             inline: true
           }
         )
@@ -78,7 +71,7 @@ const Give: Command = {
         });
 
       interaction.reply({ embeds: [transactionSummary] });
-    });
+    }
   }
 };
 
