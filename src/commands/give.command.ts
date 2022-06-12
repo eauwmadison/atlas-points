@@ -28,15 +28,17 @@ const Give: Command = {
     const donor = interaction.user;
     const recipient = interaction.options.getUser("recipient");
 
-    if (recipient === null) {
+    if (interaction.guildId === null) {
+      await displayErrorMessage(interaction, "Cannot give points in a DM");
+    } else if (recipient === null) {
       await displayErrorMessage(interaction, "Must specify recipient");
     } else if(recipient.id === donor.id) {
       await displayErrorMessage(interaction, "Cannot give to yourself");
     } else {
-      const amountGiven = await givePoints(interaction.guildId!, donor.id, recipient.id, amount);
+      const amountGiven = await givePoints(interaction.guildId, donor.id, recipient.id, amount);
 
-      const donorPoints = await getUserPoints(interaction.guildId!, donor.id);
-      const recipientPoints = await getUserPoints(interaction.guildId!, recipient.id);
+      const donorPoints = await getUserPoints(interaction.guildId, donor.id);
+      const recipientPoints = await getUserPoints(interaction.guildId, recipient.id);
 
       const transactionSummary = new MessageEmbed()
         .setColor("#0B0056")

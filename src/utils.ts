@@ -1,14 +1,6 @@
-import {
-  CommandInteraction,
-  MessageEmbed,
-  Role,
-  User
-} from "discord.js";
+import { CommandInteraction, MessageEmbed, Role, User } from "discord.js";
 
-import {
-  incrementUserPoints,
-  getUserPoints
-} from "./db/db";
+import { incrementUserPoints, getUserPoints } from "./db/db";
 
 export async function displayErrorMessage(
   interaction: CommandInteraction,
@@ -33,8 +25,17 @@ export async function incrementSingleUserPoints(
   user: User,
   amount: number
 ) {
+  if (!interaction.guildId) {
+    await displayErrorMessage(interaction, "You can't give points in a DM!");
+    return;
+  }
+
   // first change the user's points
+<<<<<<< HEAD
   const amountChange = await incrementUserPoints(interaction.guildId!, user.id, amount);
+=======
+  await incrementUserPoints(interaction.guildId, user.id, amount);
+>>>>>>> refs/remotes/origin/main
 
   const amountMagnitude = Math.abs(amountChange);
   const changePhrase = amount > 0 ? "added to" : "removed from";
@@ -44,7 +45,9 @@ export async function incrementSingleUserPoints(
     .setTitle("Transaction Complete")
     .setAuthor({
       name: `${user.tag}`,
-      iconURL: user.avatarURL()!
+      iconURL:
+        user.avatarURL() ||
+        "https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png"
     })
     .setDescription(
       `${amountMagnitude} point${
@@ -53,7 +56,7 @@ export async function incrementSingleUserPoints(
     )
     .addFields({
       name: "New Balance",
-      value: `${await getUserPoints(interaction.guildId!, user.id)}`,
+      value: `${await getUserPoints(interaction.guildId, user.id)}`,
       inline: true
     })
     .setTimestamp(new Date())
@@ -71,16 +74,17 @@ export async function incrementRolePoints(
   role: Role,
   amount: number
 ) {
+  if (!interaction.guildId) {
+    await displayErrorMessage(interaction, "You can't give points in a DM!");
+    return;
+  }
+
   // fetch all
-  await role.guild.members.fetch({force:true});
+  await role.guild.members.fetch({ force: true });
 
   for (const [, guildMember] of role.members) {
     // first change the user's points
-    await incrementUserPoints(
-      interaction.guildId!,
-      guildMember.user.id,
-      amount
-    );
+    await incrementUserPoints(interaction.guildId, guildMember.user.id, amount);
   }
 
   const amountMagnitude = Math.abs(amount);
@@ -89,11 +93,13 @@ export async function incrementRolePoints(
   const usernameList = [];
   for (const [, guildMember] of role.members) {
     const id = guildMember.user.id;
-    const bal =  await getUserPoints(interaction.guildId!, guildMember.user.id);
+    const bal = await getUserPoints(interaction.guildId, guildMember.user.id);
     usernameList.push([id, bal]);
   }
 
-  const userListStr = usernameList.map(([id, bal], i) => `${i+1}) <@${id}> (New Balance: ${bal})`).join("\n");
+  const userListStr = usernameList
+    .map(([id, bal], i) => `${i + 1}) <@${id}> (New Balance: ${bal})`)
+    .join("\n");
 
   const transactionSummary = new MessageEmbed()
     .setColor("#0B0056")
