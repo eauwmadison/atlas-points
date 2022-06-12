@@ -10,3 +10,6 @@ tsconfig.json
 
 # build artifacts
 dist/
+
+# README
+README.md

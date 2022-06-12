@@ -1,5 +1,5 @@
 import { cert, initializeApp, ServiceAccount } from "firebase-admin/app";
-import { FieldValue, getFirestore } from "firebase-admin/firestore";
+import { getFirestore } from "firebase-admin/firestore";
 
 import { Guild } from "discord.js";
 
@@ -82,13 +82,13 @@ export async function incrementUserPoints(
   const recipient = db.doc(`guilds/${guildId}/users/${userId}`);
 
   const pointsIncremented = await db.runTransaction(async (transaction) => {
-    const recipient_data = await transaction.get(recipient);
+    const recipientData = await transaction.get(recipient);
 
-    const old_points: number = recipient_data.get('points')
-    const new_points = old_points + points < 0 ? 0 : old_points + points;
+    const oldPoints: number = recipientData.get("points");
+    const newPoints = oldPoints + points < 0 ? 0 : oldPoints + points;
 
-    transaction.update(recipient, { points: new_points });
-    return new_points - old_points;
+    transaction.update(recipient, { points: newPoints });
+    return newPoints - oldPoints;
   });
 
   return pointsIncremented;
@@ -104,18 +104,20 @@ export async function givePoints(
   const recipient = db.doc(`guilds/${guildId}/users/${recipientUserId}`);
 
   const sentPoints = await db.runTransaction(async (transaction) => {
-    const donor_points_old: number = (await transaction.get(donor)).get('points');
-    const recipient_points_old: number = (await transaction.get(recipient)).get('points');
+    const donorPointsOld: number = (await transaction.get(donor)).get("points");
+    const recipientPointsOld: number = (await transaction.get(recipient)).get(
+      "points"
+    );
 
-    const points_given = points > donor_points_old ? donor_points_old : points;
+    const pointsGiven = points > donorPointsOld ? donorPointsOld : points;
 
     transaction.update(donor, {
-      points: donor_points_old - points_given
+      points: donorPointsOld - pointsGiven
     });
     transaction.update(recipient, {
-      points: recipient_points_old + points_given
+      points: recipientPointsOld + pointsGiven
     });
-    return points_given;
+    return pointsGiven;
   });
 
   return sentPoints;

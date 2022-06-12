@@ -31,7 +31,11 @@ export async function incrementSingleUserPoints(
   }
 
   // first change the user's points
-  const amountChange = await incrementUserPoints(interaction.guildId, user.id, amount);
+  const amountChange = await incrementUserPoints(
+    interaction.guildId,
+    user.id,
+    amount
+  );
   await incrementUserPoints(interaction.guildId, user.id, amount);
 
   const amountMagnitude = Math.abs(amountChange);
