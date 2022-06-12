@@ -6,6 +6,8 @@ import { SlashCommandBuilder } from "@discordjs/builders";
 import { REST } from "@discordjs/rest";
 import { Routes /*, Snowflake */ } from "discord-api-types/v9";
 
+import { registerGuildIfNotExists, registerUserIfNotExists } from "./db/db";
+
 import serviceAccountKey from "../serviceAccountKey.json";
 
 dotenv.config();
@@ -15,31 +17,6 @@ initializeApp({
   credential: cert(serviceAccountKey as ServiceAccount)
 });
 const db = getFirestore();
-
-const GuildExists = async (guild: Guild) => {
-  const guildDoc = await db.collection("guilds").doc(guild.id).get();
-  return guildDoc.exists;
-};
-
-// Register Guild in Firebase if not already registered
-const RegisterGuild = async (guild: Guild) => {
-  // if (!(await GuildExists(guild))) {
-    console.log("Registering Guild#" + guild.id + " in database.");
-    await db
-      .collection("guilds")
-      .doc(guild.id)
-      .set({
-        users: {
-          "some-user-id": {
-            points: 0
-          },
-          "some-other-user-id": {
-            points: 0
-          }
-        }
-      });
-  // }
-};
 
 // define Discord bot commands
 const commands = [
@@ -98,13 +75,13 @@ client.once("ready", async () => {
       .then(() => console.log("Successfully registered application commands."))
       .catch(console.error);
 
-    RegisterGuild(guild);
+    registerGuildIfNotExists(guild.id);
   });
   client.user!.setActivity("your points!", { type: "WATCHING" });
 });
 
-client.on("guildMemberAdd", (member) => {
-  // RegisterUser(member, member.guild.id);
+client.on("guildMemberAdd", member => {
+  registerUserIfNotExists(member.guild.id, member.id);
 });
 
 client.on("interactionCreate", async (interaction) => {
