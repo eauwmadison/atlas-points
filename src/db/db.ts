@@ -32,7 +32,7 @@ export async function registerGuildIfNotExists(guild: Guild) {
   if (neededToCreate) {
     for (const [_, guildMember] of await guild.members.fetch()) {
       if (!guildMember.user.bot) {
-        registerUserIfNotExists(guild.id, guildMember.user.id)
+        registerUserIfNotExists(guild.id, guildMember.user.id);
       }
     }
   }
