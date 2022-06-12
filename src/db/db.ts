@@ -29,12 +29,13 @@ export async function registerGuildIfNotExists(guild: Guild) {
     }
   });
 
-  if (neededToCreate) {
+  if (true || neededToCreate) {
     // enumerate members
     const users = await guild.members.list({ cache: false });
+    console.log(users);
     // give 0 points
     for (const [a, b] of users) {
-      guild_doc.collection("users").add({
+      guild_doc.collection("users").doc(a).create({
         points: 0
       });
     }

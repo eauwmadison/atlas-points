@@ -56,7 +56,7 @@ const commands = [
 ].map((command) => command.toJSON());
 
 // create a new Discord client instance
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS] });
 const rest = new REST({ version: "9" }).setToken(process.env.DISCORD_TOKEN!);
 
 // when the client is ready, run this code (only once)
