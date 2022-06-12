@@ -44,11 +44,9 @@ export async function registerGuildIfNotExists(guild: Guild) {
   });
 
   if (neededToCreate) {
-    for (const [_, guildMember] of await guild.members.fetch()) {
-      if (!guildMember.user.bot) {
-        registerUserIfNotExists(guild.id, guildMember.user.id);
-      }
-    }
+    (await guild.members.fetch()).map((member) =>
+      registerUserIfNotExists(guild.id, member.id)
+    );
   }
   return neededToCreate;
 }
