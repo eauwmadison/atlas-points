@@ -141,35 +141,33 @@ client.on("interactionCreate", async (interaction) => {
     const amount = interaction.options.getInteger("amount");
     const user = interaction.options.getUser("user") || interaction.user;
 
-    addUserPoints(interaction.guildId!, user.id, amount!).then(() =>
-      getUserPoints(interaction.guildId!, user.id).then((points) => {
-        const transactionSummary = new MessageEmbed()
-          .setColor("#0B0056")
-          .setTitle("Transaction Complete")
-          .setAuthor({
-            name: `${user.tag}`,
-            iconURL: user.avatarURL()!
-          })
-          .setDescription(
-            `${amount} point${amount === 1 ? `` : `s`} added to <@${
-              user.id
-            }>'s total!`
-          )
-          .addFields({
-            name: "Total Points",
-            value: `${points}`,
-            inline: true
-          })
-          .setTimestamp(new Date())
-          .setFooter({
-            text: "Atlas Points",
-            iconURL:
-              "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
-          });
+    await addUserPoints(interaction.guildId!, user.id, amount!);
 
-        interaction.reply({ embeds: [transactionSummary] });
+    const transactionSummary = new MessageEmbed()
+      .setColor("#0B0056")
+      .setTitle("Transaction Complete")
+      .setAuthor({
+        name: `${user.tag}`,
+        iconURL: user.avatarURL()!
       })
-    );
+      .setDescription(
+        `${amount} point${amount === 1 ? `` : `s`} added to <@${
+          user.id
+        }>'s total!`
+      )
+      .addFields({
+        name: "Total Points",
+        value: `${await getUserPoints(interaction.guildId!, user.id)}`,
+        inline: true
+      })
+      .setTimestamp(new Date())
+      .setFooter({
+        text: "Atlas Points",
+        iconURL:
+          "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
+      });
+
+    interaction.reply({ embeds: [transactionSummary] });
   } else if (interaction.commandName === "give") {
     const amount = interaction.options.getInteger("amount")!;
     const donor = interaction.user;
@@ -218,35 +216,33 @@ client.on("interactionCreate", async (interaction) => {
     const amount = interaction.options.getInteger("amount");
     const user = interaction.options.getUser("user") || interaction.user;
 
-    subtractUserPoints(interaction.guildId!, user.id, amount!).then(() =>
-      getUserPoints(interaction.guildId!, user.id).then((points) => {
-        const transactionSummary = new MessageEmbed()
-          .setColor("#0B0056")
-          .setTitle("Transaction Complete")
-          .setAuthor({
-            name: `${user.tag}`,
-            iconURL: user.avatarURL()!
-          })
-          .setDescription(
-            `${amount} point${amount === 1 ? `` : `s`} removed from <@${
-              user.id
-            }>'s total!`
-          )
-          .addFields({
-            name: "Total Points",
-            value: `${points}`,
-            inline: true
-          })
-          .setTimestamp(new Date())
-          .setFooter({
-            text: "Atlas Points",
-            iconURL:
-              "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
-          });
+    await subtractUserPoints(interaction.guildId!, user.id, amount!);
 
-        interaction.reply({ embeds: [transactionSummary] });
+    const transactionSummary = new MessageEmbed()
+      .setColor("#0B0056")
+      .setTitle("Transaction Complete")
+      .setAuthor({
+        name: `${user.tag}`,
+        iconURL: user.avatarURL()!
       })
-    );
+      .setDescription(
+        `${amount} point${amount === 1 ? `` : `s`} removed from <@${
+          user.id
+        }>'s total!`
+      )
+      .addFields({
+        name: "Total Points",
+        value: `${await getUserPoints(interaction.guildId!, user.id)}`,
+        inline: true
+      })
+      .setTimestamp(new Date())
+      .setFooter({
+        text: "Atlas Points",
+        iconURL:
+          "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
+      });
+
+    interaction.reply({ embeds: [transactionSummary] });
   } else if (interaction.commandName === "leaderboard") {
     const guild = interaction.guild;
 
