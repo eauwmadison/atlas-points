@@ -54,7 +54,7 @@ export async function incrementSingleUserPoints(
       } ${changePhrase} <@${user.id}>'s total!`
     )
     .addFields({
-      name: `New Balance for @${user.id}`,
+      name: "New Balance",
       value: `${await getUserPoints(interaction.guildId!, user.id)}`,
       inline: true
     })
