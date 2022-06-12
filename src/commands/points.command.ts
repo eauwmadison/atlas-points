@@ -22,19 +22,27 @@ const Points: Command = {
   execute: async (_client: Client, interaction: CommandInteraction) => {
     const user = interaction.options.getUser("user") || interaction.user;
 
+    if (!interaction.guildId) {
+      await interaction.reply("This command can only be used in a server");
+      return;
+    }
+
     const userSummary = new MessageEmbed()
       .setColor("#0B0056")
       .setTitle(`Point Summary for ${user.username}`)
-      .setThumbnail(user.avatarURL()!)
+      .setThumbnail(
+        user.avatarURL() ||
+          "https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png"
+      )
       .addFields(
         {
           name: "Ranking",
-          value: `#${await getUserRank(interaction.guildId!, user.id)}`,
+          value: `#${await getUserRank(interaction.guildId, user.id)}`,
           inline: true
         },
         {
           name: "Total Points",
-          value: `${await getUserPoints(interaction.guildId!, user.id)}`,
+          value: `${await getUserPoints(interaction.guildId, user.id)}`,
           inline: true
         }
       )

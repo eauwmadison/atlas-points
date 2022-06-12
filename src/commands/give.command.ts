@@ -2,6 +2,7 @@ import { CommandInteraction, Client, MessageEmbed } from "discord.js";
 import { getUserPoints, givePoints } from "../db/db";
 
 import { Command } from "../command";
+import { displayErrorMessage } from "../utils";
 
 const Give: Command = {
   name: "give",
@@ -23,22 +24,37 @@ const Give: Command = {
     }
   ],
   execute: async (_client: Client, interaction: CommandInteraction) => {
-    const amount = interaction.options.getInteger("amount")!; // TODO: fix types
+    const amount = interaction.options.getInteger("amount");
     const donor = interaction.user;
-    const recipient = interaction.options.getUser("recipient")!;
+    const recipient = interaction.options.getUser("recipient");
 
-    await givePoints(interaction.guildId!, donor.id, recipient.id, amount);
+    if (!interaction.guildId) {
+      await displayErrorMessage(
+        interaction,
+        "You can't give points in a DM!"
+      );
+      return;
+    }
+
+    if (!donor || !recipient) {
+      await interaction.reply("You must specify a donor and a recipient!");
+      return;
+    }
+
+    await givePoints(interaction.guildId, donor.id, recipient.id, amount || 0);
 
     Promise.all([
-      getUserPoints(interaction.guildId!, donor.id),
-      getUserPoints(interaction.guildId!, recipient.id)
+      getUserPoints(interaction.guildId, donor.id),
+      getUserPoints(interaction.guildId, recipient.id)
     ]).then((points) => {
       const transactionSummary = new MessageEmbed()
         .setColor("#0B0056")
         .setTitle("Transaction Complete")
         .setAuthor({
           name: `${recipient.tag}`,
-          iconURL: donor.avatarURL()!
+          iconURL:
+            donor.avatarURL() ||
+            "https://discordapp.com/assets/322c936a8c8be1b803cd94861bdfa868.png"
         })
         .setDescription(
           `<@${donor.id}> donated ${amount} point${

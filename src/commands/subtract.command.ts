@@ -1,5 +1,9 @@
 import { CommandInteraction, Client, Role } from "discord.js";
-import { displayErrorMessage, incrementRolePoints, incrementSingleUserPoints } from "../utils";
+import {
+  displayErrorMessage,
+  incrementRolePoints,
+  incrementSingleUserPoints
+} from "../utils";
 
 import { Command } from "../command";
 
@@ -33,7 +37,9 @@ const Subtract: Command = {
     const role = interaction.options.getRole("role") as Role;
 
     if (amount === null || amount < 0 || amount > 1024 ** 3) {
-      await displayErrorMessage(interaction, "amount must be greater than 0 and less than 2^30"
+      await displayErrorMessage(
+        interaction,
+        "amount must be greater than 0 and less than 2^30"
       );
     } else {
       const incAmount = -amount;
@@ -43,7 +49,10 @@ const Subtract: Command = {
       } else if (user === null) {
         await incrementRolePoints(interaction, role, incAmount);
       } else {
-        await displayErrorMessage(interaction, "can't target a user and role at the same time time");
+        await displayErrorMessage(
+          interaction,
+          "can't target a user and role at the same time time"
+        );
       }
     }
   }

@@ -2,6 +2,7 @@ import { CommandInteraction, Client, MessageEmbed } from "discord.js";
 import { getRankings } from "../db/db";
 
 import { Command } from "../command";
+import { displayErrorMessage } from "../utils";
 
 const Leaderboard: Command = {
   name: "leaderboard",
@@ -10,7 +11,15 @@ const Leaderboard: Command = {
   execute: async (_client: Client, interaction: CommandInteraction) => {
     const { guild } = interaction;
 
-    const results = await getRankings(guild!.id);
+    if (!guild) {
+      await displayErrorMessage(
+        interaction,
+        "This command can only be used in a server"
+      );
+      return;
+    }
+
+    const results = await getRankings(guild.id);
 
     const list = results
       .map(
@@ -21,7 +30,7 @@ const Leaderboard: Command = {
 
     const guildSummary = new MessageEmbed()
       .setColor("#0B0056")
-      .setTitle(`Leaderboard for ${guild!.name}` || "current server")
+      .setTitle(`Leaderboard for ${guild.name}` || "current server")
       .setAuthor({
         name: "Atlas Points",
         iconURL:
@@ -29,7 +38,7 @@ const Leaderboard: Command = {
         url: "https://atlasfellowship.org"
       })
       .setThumbnail(
-        guild!.iconURL() ||
+        guild.iconURL() ||
           "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
       )
       .setDescription(list)
