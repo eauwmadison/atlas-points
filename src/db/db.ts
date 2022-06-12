@@ -4,7 +4,6 @@ import { FieldValue, getFirestore } from "firebase-admin/firestore";
 import { Guild } from "discord.js";
 
 import serviceAccountKey from "../../serviceAccountKey.json";
-import { transcode } from "buffer";
 
 // initialize Firebase
 initializeApp({
