@@ -14,6 +14,8 @@ const db = getFirestore();
 export async function registerGuildIfNotExists(guild: Guild) {
   console.log(`Attempting to register Guild ${guild.id} in database.`);
 
+  // fetching users currently times out
+
   // const users = await guild.members
   //   .fetch()
   //   .then((members) => members.map((member) => member.user.id));

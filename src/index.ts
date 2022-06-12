@@ -1,6 +1,4 @@
 import dotenv from "dotenv";
-import { cert, initializeApp, ServiceAccount } from "firebase-admin/app";
-import { /* FieldValue, */ getFirestore } from "firebase-admin/firestore";
 import { Client, Guild, Intents, MessageEmbed, User } from "discord.js";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { REST } from "@discordjs/rest";
@@ -8,15 +6,7 @@ import { Routes /*, Snowflake */ } from "discord-api-types/v9";
 
 import { registerGuildIfNotExists, registerUserIfNotExists } from "./db/db";
 
-import serviceAccountKey from "../serviceAccountKey.json";
-
 dotenv.config();
-
-// initialize Firebase
-initializeApp({
-  credential: cert(serviceAccountKey as ServiceAccount)
-});
-const db = getFirestore();
 
 // define Discord bot commands
 const commands = [
@@ -75,12 +65,12 @@ client.once("ready", async () => {
       .then(() => console.log("Successfully registered application commands."))
       .catch(console.error);
 
-    registerGuildIfNotExists(guild.id);
+    registerGuildIfNotExists(guild);
   });
   client.user!.setActivity("your points!", { type: "WATCHING" });
 });
 
-client.on("guildMemberAdd", member => {
+client.on("guildMemberAdd", (member) => {
   registerUserIfNotExists(member.guild.id, member.id);
 });
 
