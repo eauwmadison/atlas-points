@@ -74,3 +74,27 @@ export async function addUserPoints(
       points: FieldValue.increment(points)
     });
 }
+
+export async function donatePoints(
+  guildId: string,
+  donorUserId: string,
+  recipientUserId: string,
+  points: number
+) {
+  console.log(`donate: src:${donorUserId} dest:${recipientUserId}`);
+
+  const donor = db.doc(`guilds/${guildId}/users/${donorUserId}`);
+  const recipient = db.doc(`guilds/${guildId}/users/${recipientUserId}`);
+
+  const sentPoints = await db.runTransaction(async transaction => {
+    transaction.update(donor,{
+      points: FieldValue.increment(-points)
+    });
+    transaction.update(donor,{
+      points: FieldValue.increment(points)
+    });
+    return points;
+  });
+
+  return sentPoints;
+}
