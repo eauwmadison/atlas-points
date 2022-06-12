@@ -12,7 +12,9 @@ export default function deployCommands(
   const commandsPath = path.join(__dirname, "commands");
   const commandFiles = fs
     .readdirSync(commandsPath)
-    .filter((file) => file.endsWith(".command.ts"));
+    .filter(
+      (file) => file.endsWith(".command.ts") || file.endsWith(".command.js")
+    );
 
   for (const file of commandFiles) {
     const filePath = path.join(commandsPath, file);

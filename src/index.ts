@@ -19,7 +19,9 @@ const commandsPath = path.join(__dirname, "commands");
 console.log(commandsPath);
 const commandFiles = fs
   .readdirSync(commandsPath)
-  .filter((file) => file.endsWith(".command.ts") || file.endsWith(".command.js"));
+  .filter(
+    (file) => file.endsWith(".command.ts") || file.endsWith(".command.js")
+  );
 console.log("Command Files:", commandFiles);
 
 for (const file of commandFiles) {

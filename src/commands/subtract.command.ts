@@ -26,7 +26,10 @@ module.exports = {
     const user = interaction.options.getUser("user") || interaction.user;
 
     if (amount === null || amount < 0 || amount > 1024 ** 3) {
-      await displayErrorMessage(interaction, "amount must be greater than 0 and less than 2^30");
+      await displayErrorMessage(
+        interaction,
+        "amount must be greater than 0 and less than 2^30"
+      );
     } else {
       await incrementSingleUserPoints(interaction, user, -amount);
     }
