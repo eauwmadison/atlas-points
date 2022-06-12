@@ -7,7 +7,8 @@ import { Routes /*, Snowflake */ } from "discord-api-types/v9";
 import {
   registerGuildIfNotExists,
   registerUserIfNotExists,
-  getUserPoints
+  getUserPoints,
+  addUserPoints
 } from "./db/db";
 
 dotenv.config();
@@ -84,38 +85,36 @@ client.on("interactionCreate", async (interaction) => {
   if (interaction.commandName === "points") {
     const user = interaction.options.getUser("user") || interaction.user;
 
-    console.log(user.username);
+    getUserPoints(interaction.guildId!, "some-user-id").then((points) => {
+      const userSummary = new MessageEmbed()
+        .setColor("#0B0056")
+        .setTitle("Point Summary for " + user.username)
+        .setAuthor({
+          name: "Atlas Points",
+          iconURL:
+            "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png",
+          url: "https://atlasfellowship.org"
+        })
+        .setThumbnail(user.avatarURL()!)
+        .addFields(
+          { name: "Ranking", value: "#1", inline: true },
+          {
+            name: "Points",
+            value: points.toString(),
+            inline: true
+          }
+        )
+        .setTimestamp(new Date());
 
-    console.log(
-      getUserPoints(interaction.guildId!, "some-user-id").then((points) =>
-        console.log(points)
-      )
-    );
-
-    const userSummary = new MessageEmbed()
-      .setColor("#0B0056")
-      .setTitle("Point Summary for " + user.username)
-      .setAuthor({
-        name: "Atlas Points",
-        iconURL:
-          "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png",
-        url: "https://atlasfellowship.org"
-      })
-      .setThumbnail(user.avatarURL()!)
-      .addFields(
-        {
-          name: "Points",
-          value: "1",
-          inline: true
-        },
-        { name: "Ranking", value: "#1", inline: true }
-      )
-      .setTimestamp(new Date());
-
-    await interaction.reply({ embeds: [userSummary] });
+      interaction.reply({ embeds: [userSummary] });
+    });
   } else if (interaction.commandName === "add") {
     const amount = interaction.options.getInteger("amount");
     const user = interaction.options.getUser("user") || interaction.user;
+
+    addUserPoints(interaction.guildId!, "some-user-id", amount!).then(() =>
+      interaction.reply(`Added ${amount} points to ${user.username}`)
+    );
   } else if (interaction.commandName === "leaderboard") {
     const guild = interaction.guild;
 

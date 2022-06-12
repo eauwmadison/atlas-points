@@ -63,7 +63,7 @@ export async function registerUserIfNotExists(guildId: string, userId: string) {
 export async function getUserPoints(guildId: string, userId: string) {
   const user = await db.collection(`guilds/${guildId}/users`).doc(userId).get();
 
-  return user.data()?.points;
+  return user.data()!.points;
 }
 
 export async function addUserPoints(
@@ -71,14 +71,10 @@ export async function addUserPoints(
   userId: string,
   points: number
 ) {
-  const user = await db.collection(`guilds/${guildId}/users`).doc(userId).get();
-
-  // TODO: use FieldValue.increment()
   await db
     .collection(`guilds/${guildId}/users`)
     .doc(userId)
     .update({
-      points: user.data()?.points + points
+      points: FieldValue.increment(points)
     });
-  const newPoints = user.data()?.points + points;
 }
