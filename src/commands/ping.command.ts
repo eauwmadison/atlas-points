@@ -1,11 +1,14 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { CommandInteraction } from "discord.js";
+import { BaseCommandInteraction, Client } from "discord.js";
 
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName("ping")
-    .setDescription('Replies with "Pong!" to test the bot\'s connection'),
-  async execute(interaction: CommandInteraction) {
+import { Command } from "../command";
+
+const Ping: Command = {
+  name: "ping",
+  description: 'Replies with "Pong!" to test the bot\'s connection',
+  type: "CHAT_INPUT",
+  execute: async (_client: Client, interaction: BaseCommandInteraction) => {
     await interaction.reply("Pong!");
   }
 };
+
+export default Ping;

@@ -1,25 +1,29 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
 import { getUserPoints, givePoints } from "../db/db";
 
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName("give")
-    .setDescription("Send points to another user")
-    .addIntegerOption((option) =>
-      option
-        .setName("amount")
-        .setDescription("the number of points to add")
-        .setRequired(true)
-    )
-    .addUserOption((option) =>
-      option
-        .setName("recipient")
-        .setDescription("the user to give points to")
-        .setRequired(true)
-    ),
-  async execute(interaction: CommandInteraction) {
-    const amount = interaction.options.getInteger("amount")!;
+import { Command } from "../command";
+
+const Give: Command = {
+  name: "give",
+  description: "Send points to another user",
+  type: "CHAT_INPUT",
+  options: [
+    {
+      name: "amount",
+      description: "the number of points to add",
+      type: "INTEGER",
+      required: true,
+      minValue: 1
+    },
+    {
+      name: "recipient",
+      description: "the user to give points to",
+      type: "USER",
+      required: true
+    }
+  ],
+  execute: async (_client: Client, interaction: BaseCommandInteraction) => {
+    const amount = interaction.options.getInteger("amount")!; // TODO: fix types
     const donor = interaction.user;
     const recipient = interaction.options.getUser("recipient")!;
 
@@ -64,3 +68,5 @@ module.exports = {
     });
   }
 };
+
+export default Give;

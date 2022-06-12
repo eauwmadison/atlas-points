@@ -1,21 +1,25 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
 import { getUserRank, getUserPoints } from "../db/db";
 
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName("points")
-    .setDescription("View points for a user, role, or the entire server")
-    .addUserOption((option) =>
-      option.setName("user").setDescription("the user to target")
-    )
-    .addRoleOption((option) =>
-      option.setName("role").setDescription("the role to target")
-    )
-    .addStringOption((option) =>
-      option.setName("server").setDescription("rankings for this server")
-    ),
-  async execute(interaction: CommandInteraction) {
+import { Command } from "../command";
+
+const Points: Command = {
+  name: "points",
+  description: "View points for a user, role, or the entire server",
+  type: "CHAT_INPUT",
+  options: [
+    {
+      name: "user",
+      description: "the user to target",
+      type: "USER"
+    },
+    {
+      name: "role",
+      description: "the role to target",
+      type: "ROLE"
+    }
+  ],
+  execute: async (_client: Client, interaction: BaseCommandInteraction) => {
     const user = interaction.options.getUser("user") || interaction.user;
 
     const userSummary = new MessageEmbed()
@@ -36,6 +40,8 @@ module.exports = {
       )
       .setTimestamp(new Date());
 
-    interaction.reply({ embeds: [userSummary] });
+    await interaction.reply({ embeds: [userSummary] });
   }
 };
+
+export default Points;

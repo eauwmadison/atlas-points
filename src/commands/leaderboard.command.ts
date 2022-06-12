@@ -1,12 +1,13 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { CommandInteraction, MessageEmbed } from "discord.js";
+import { BaseCommandInteraction, Client, MessageEmbed } from "discord.js";
 import { getRankings } from "../db/db";
 
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName("leaderboard")
-    .setDescription("Display the top 10 members"),
-  async execute(interaction: CommandInteraction) {
+import { Command } from "../command";
+
+const Leaderboard: Command = {
+  name: "leaderboard",
+  description: "Display rankings for the server",
+  type: "CHAT_INPUT",
+  execute: async (_client: Client, interaction: BaseCommandInteraction) => {
     const { guild } = interaction;
 
     const results = await getRankings(guild!.id);
@@ -34,6 +35,8 @@ module.exports = {
       .setDescription(list)
       .setTimestamp(new Date());
 
-    interaction.reply({ embeds: [guildSummary] });
+    await interaction.reply({ embeds: [guildSummary] });
   }
 };
+
+export default Leaderboard;
