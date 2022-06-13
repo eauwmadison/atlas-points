@@ -13,5 +13,15 @@ Atlas Fellowship Discord bot to track points.
 
 ## Requirements
   * Node.js
-  * Yarn
+  * Yarn/NPM
+
+
+## Installation Instructions
+  * git clone this repository
+  * inside the directory, do `yarn` or `npm i`
+  * add `.env` in the root of the project containing discord client id and secret
+      * see (.env.example)[/.env.example] for an example
+  * add `serviceAccountKey.json` in the root of the project
+      * see (serviceAccountKey.example.json)[/serviceAccountKey.example.json] for an example
+  * Run project with `yarn build && yarn start`
  

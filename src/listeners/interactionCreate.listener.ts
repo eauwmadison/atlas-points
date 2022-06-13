@@ -15,7 +15,8 @@ const handleCommand = async (
 
   try {
     await command.execute(client, interaction);
-  } catch {
+  } catch(e) {
+    console.log(e);
     await displayErrorMessage(interaction, "An internal error occured while executing this command.");
   }
 };
