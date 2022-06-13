@@ -4,8 +4,6 @@ import { getUserPoints, givePoints } from "../db/db";
 import { Command } from "../command";
 import { displayErrorMessage } from "../utils";
 
-const sessionTags = ["June 12-23", "July 3-14", "July 17-28", "August 14-25"];
-type SessionTag = typeof sessionTags[number];
 
 const Give: Command = {
   name: "give",
@@ -54,16 +52,17 @@ const Give: Command = {
     const roles = await interaction.guild.roles.fetch();
     const members = await interaction.guild.members.fetch();
 
+    const cohortTags = ["June 12-23", "July 3-14", "July 17-28", "August 14-25"];
+
     // check if both recipient has same time tag as
 
     // get tag of donor
-    let donorSessionTag: null | SessionTag = null;
+    let cohortRoleId: null | string = null;
     for (const [, guildMember] of members) {
       if (guildMember.user.id === donor.id) {
         for (const [, role] of guildMember.roles.cache) {
-          const idx = sessionTags.findIndex(x => role.name === x);
-          if (idx >= 0) {
-            donorSessionTag = sessionTags[idx];
+          if (cohortTags.includes(role.name)) {
+            cohortRoleId = role.id;
             break;
           }
         }
@@ -72,11 +71,11 @@ const Give: Command = {
 
     // check if recipient has same tag
     let permitted = false;
-    if (donorSessionTag !== null) {
+    if (cohortRoleId !== null) {
       for (const [, guildMember] of members) {
         if (guildMember.user.id === recipient.id) {
-          for (const [, role] of guildMember.roles.cache) {
-            if (role.name === donorSessionTag) {
+          for (const [id,] of guildMember.roles.cache) {
+            if (id === cohortRoleId) {
               permitted = true;
               break;
             }
@@ -85,9 +84,9 @@ const Give: Command = {
       }
     }
 
-    if(!permitted) {
-        await displayErrorMessage( interaction, "You can only give E-Clips to people in your cohort!");
-        return;
+    if (!permitted) {
+      await displayErrorMessage(interaction, "You can only give E-Clips to people in your cohort!");
+      return;
     }
 
     const amountGiven = await givePoints(
