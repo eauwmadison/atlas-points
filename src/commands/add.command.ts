@@ -36,6 +36,25 @@ const Add: Command = {
     const user = interaction.options.getUser("user");
     const role = interaction.options.getRole("role") as Role | null;
 
+    if (interaction.guild === null) {
+      await displayErrorMessage(interaction, "Cannot give points in a DM");
+      return;
+    }
+
+    const roles = await interaction.guild.roles.fetch();
+    const members = await interaction.guild.members.fetch();
+
+    let permitted = false;
+    for (const [, guildMember] of members) {
+      if (guildMember.user.id === interaction.user.id) {
+        for (const [, role] of guildMember.roles.cache) {
+          if (role.name === "Instructor") {
+            permitted = true;
+          }
+        }
+      }
+    }
+
     if (amount === null || amount < 0 || amount > 1024 ** 3) {
       await displayErrorMessage(
         interaction,

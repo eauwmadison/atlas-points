@@ -79,7 +79,7 @@ export async function incrementRolePoints(
   }
 
   // fetch all
-  await role.guild.members.fetch({ force: true });
+  await role.guild.members.fetch();
 
   for (const [, guildMember] of role.members) {
     // first change the user's points
