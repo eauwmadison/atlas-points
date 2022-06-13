@@ -10,12 +10,12 @@ import { Command } from "../command";
 const Subtract: Command = {
   name: "subtract",
   description:
-    "Moderators can subtract points from a user, role, or the entire server",
+    "Moderators can subtract E-Clips from a user, role, or the entire server",
   type: "CHAT_INPUT",
   options: [
     {
       name: "amount",
-      description: "the number of points to subtract",
+      description: "the number of E-Clips to subtract",
       type: "INTEGER",
       minValue: 0,
       required: true
@@ -37,7 +37,7 @@ const Subtract: Command = {
     const role = interaction.options.getRole("role") as Role | null;
 
     if (interaction.guild === null) {
-      await displayErrorMessage(interaction, "Cannot give points in a DM");
+      await displayErrorMessage(interaction, "Cannot give E-Clips in a DM");
       return;
     }
 
@@ -56,7 +56,7 @@ const Subtract: Command = {
     }
 
     if (!permitted) {
-      await displayErrorMessage(interaction, "Only an Instructor can add or subtract points directly");
+      await displayErrorMessage(interaction, "Only an Instructor can add or subtract E-Clips directly");
       return;
     }
 

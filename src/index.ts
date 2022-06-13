@@ -17,7 +17,7 @@ dotenv.config();
 
 // create a new Discord client instance
 const client = new Client({
-  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS]
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_PRESENCES]
 });
 
 const commands: Command[] = [Points, Add, Subtract, Give, Leaderboard, Ping];

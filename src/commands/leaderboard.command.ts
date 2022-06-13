@@ -24,15 +24,15 @@ const Leaderboard: Command = {
     const list = results
       .map(
         (result: any, index) =>
-          `${index + 1}) <@${result[0]}> — **${result[1].points}** points`
+          `${index + 1}) <@${result[0]}> — **${result[1].points}** E-Clips`
       )
       .join("\n");
 
     const guildSummary = new MessageEmbed()
       .setColor("#0B0056")
-      .setTitle(`Leaderboard for ${guild.name}` || "current server")
+      .setTitle(`Leaderboard for ${guild.name}`)
       .setAuthor({
-        name: "Atlas Points",
+        name: "Atlas E-Clip Bot",
         iconURL:
           "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png",
         url: "https://atlasfellowship.org"

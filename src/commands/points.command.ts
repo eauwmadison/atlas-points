@@ -5,7 +5,7 @@ import { Command } from "../command";
 
 const Points: Command = {
   name: "points",
-  description: "View points for a user, role, or the entire server",
+  description: "View points for a user",
   type: "CHAT_INPUT",
   options: [
     {
@@ -13,11 +13,6 @@ const Points: Command = {
       description: "the user to target",
       type: "USER"
     },
-    {
-      name: "role",
-      description: "the role to target",
-      type: "ROLE"
-    }
   ],
   execute: async (_client: Client, interaction: CommandInteraction) => {
     const user = interaction.options.getUser("user") || interaction.user;
@@ -29,7 +24,7 @@ const Points: Command = {
 
     const userSummary = new MessageEmbed()
       .setColor("#0B0056")
-      .setTitle(`Point Summary for ${user.username}`)
+      .setTitle(`E-Clip summary for ${user.username}`)
       .setThumbnail(user.avatarURL() || user.defaultAvatarURL)
       .addFields(
         {
@@ -38,7 +33,7 @@ const Points: Command = {
           inline: true
         },
         {
-          name: "Total Points",
+          name: "Total E-Clips",
           value: `${await getUserPoints(interaction.guildId, user.id)}`,
           inline: true
         }

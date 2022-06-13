@@ -51,10 +51,9 @@ export async function registerGuildIfNotExists(guild: Guild) {
   return neededToCreate;
 }
 
-export async function getUserPoints(guildId: string, userId: string) {
-  const user = await db.collection(`guilds/${guildId}/users`).doc(userId).get();
-
-  return user.data()?.points || "Could not find user";
+export async function getUserPoints(guildId: string, userId: string): Promise<number | undefined> {
+  const user = await db.doc(`guilds/${guildId}/users/${userId}`).get();
+  return user.data()?.points;
 }
 
 export async function getRankings(guildId: string) {
@@ -79,6 +78,8 @@ export async function incrementUserPoints(
   userId: string,
   points: number
 ) {
+  console.log("ADDING:", points, "TO:", userId, "IN:", guildId);
+
   const recipient = db.doc(`guilds/${guildId}/users/${userId}`);
 
   const pointsIncremented = await db.runTransaction(async (transaction) => {

@@ -9,10 +9,10 @@ export default (client: Client, commands: Command[]): void => {
     }
 
     console.log(`Logged in as ${client.user.tag} with ID ${client.user.id}!`);
-    client.guilds.cache.forEach((guild) => {
-      client.application?.commands.set(commands, guild.id);
+    for (const [,guild] of client.guilds.cache) {
+      await client.application?.commands.set(commands, guild.id);
       registerGuildIfNotExists(guild);
-    });
+    };
     client.user.setActivity("your points!", { type: "WATCHING" });
   });
 };

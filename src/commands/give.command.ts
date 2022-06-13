@@ -11,14 +11,14 @@ const Give: Command = {
   options: [
     {
       name: "amount",
-      description: "the number of points to give",
+      description: "the number of E-Clips to give",
       type: "INTEGER",
       required: true,
       minValue: 1
     },
     {
       name: "recipient",
-      description: "the user to give points to",
+      description: "the user to give E-Clips to",
       type: "USER",
       required: true
     }
@@ -29,12 +29,12 @@ const Give: Command = {
     const recipient = interaction.options.getUser("recipient");
 
     if (!amount) {
-      await displayErrorMessage(interaction, "Please specify an amount");
+      await displayErrorMessage(interaction, "Please specify the number of E-Clips you wish to give");
       return;
     }
 
     if (interaction.guildId === null) {
-      await displayErrorMessage(interaction, "Cannot give points in a DM");
+      await displayErrorMessage(interaction, "Cannot give E-Clips in a DM");
     } else if (recipient === null) {
       await displayErrorMessage(interaction, "Must specify recipient");
     } else if (recipient.id === donor.id) {
@@ -57,11 +57,11 @@ const Give: Command = {
         .setColor("#0B0056")
         .setTitle("Transaction Complete")
         .setAuthor({
-          name: `${recipient.tag}`,
+          name: `${donor.tag}`,
           iconURL: donor.avatarURL() || donor.defaultAvatarURL
         })
         .setDescription(
-          `<@${donor.id}> donated ${amountGiven} point${
+          `<@${donor.id}> gave ${amountGiven} E-Clip${
             amountGiven === 1 ? "" : "s"
           } to <@${recipient.id}>`
         )
@@ -79,7 +79,7 @@ const Give: Command = {
         )
         .setTimestamp(new Date())
         .setFooter({
-          text: "Atlas Points",
+          text: "Atlas E-Clip Bot",
           iconURL:
             "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
         });

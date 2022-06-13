@@ -26,7 +26,7 @@ export async function incrementSingleUserPoints(
   amount: number
 ) {
   if (!interaction.guildId) {
-    await displayErrorMessage(interaction, "You can't give points in a DM!");
+    await displayErrorMessage(interaction, "You can't give eclips in a DM!");
     return;
   }
 
@@ -36,22 +36,21 @@ export async function incrementSingleUserPoints(
     user.id,
     amount
   );
-  await incrementUserPoints(interaction.guildId, user.id, amount);
 
   const amountMagnitude = Math.abs(amountChange);
   const changePhrase = amount > 0 ? "added to" : "removed from";
 
   const transactionSummary = new MessageEmbed()
     .setColor("#0B0056")
-    .setTitle("Transaction Complete")
+    .setTitle("E-Clip Transaction Complete")
     .setAuthor({
       name: `${user.tag}`,
       iconURL: user.avatarURL() || user.defaultAvatarURL
     })
     .setDescription(
-      `${amountMagnitude} point${
+      `${amountMagnitude} eclip${
         amountMagnitude === 1 ? "" : "s"
-      } ${changePhrase} <@${user.id}>'s total!`
+      } ${changePhrase} <@${user.id}>'s balance!`
     )
     .addFields({
       name: "New Balance",
@@ -60,7 +59,7 @@ export async function incrementSingleUserPoints(
     })
     .setTimestamp(new Date())
     .setFooter({
-      text: "Atlas Points",
+      text: "Atlas E-Clip Bot",
       iconURL:
         "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
     });
@@ -102,7 +101,7 @@ export async function incrementRolePoints(
 
   const transactionSummary = new MessageEmbed()
     .setColor("#0B0056")
-    .setTitle("Transaction Complete")
+    .setTitle("E-Clip Transaction Complete")
     .setDescription(
       `${amountMagnitude} point${
         amountMagnitude === 1 ? "" : "s"
@@ -110,7 +109,7 @@ export async function incrementRolePoints(
     )
     .setTimestamp(new Date())
     .setFooter({
-      text: "Atlas Points",
+      text: "Atlas E-Clip Bot",
       iconURL:
         "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
     });
