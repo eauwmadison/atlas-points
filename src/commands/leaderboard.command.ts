@@ -39,10 +39,15 @@ const Leaderboard: Command = {
       })
       .setThumbnail(
         guild.iconURL() ||
-          "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
+        "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
       )
       .setDescription(list)
-      .setTimestamp(new Date());
+      .setTimestamp(new Date())
+      .setFooter({
+        text: "Atlas E-Clip Bot",
+        iconURL:
+          "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
+      });
 
     await interaction.reply({ embeds: [guildSummary] });
   }

@@ -28,27 +28,20 @@ export async function registerUserIfNotExists(guildId: string, userId: string) {
   return neededToCreate;
 }
 
-export async function registerGuildIfNotExists(guild: Guild) {
-  console.log(`Attempting to register Guild ${guild.id} in database.`);
+export async function registerGuildIfNotExists(guildId: string) {
+  console.log(`Attempting to register Guild ${guildId} in database.`);
 
-  const guildDoc = db.doc(`guilds/${guild.id}`);
-  const neededToCreate = await db.runTransaction(async (transaction) => {
+  const guildDoc = db.doc(`guilds/${guildId}`);
+  return await db.runTransaction(async (transaction) => {
     const guildDocData = await transaction.get(guildDoc);
     if (guildDocData.exists) {
-      console.log(`already exists: ${guild.id}`);
+      console.log(`guild already exists: ${guildId}`);
       return false;
     }
     transaction.create(guildDoc, {});
-    console.log(`created: ${guild.id}`);
+    console.log(`created guild: ${guildId}`);
     return true;
   });
-
-  if (neededToCreate) {
-    (await guild.members.fetch()).map((member) =>
-      registerUserIfNotExists(guild.id, member.id)
-    );
-  }
-  return neededToCreate;
 }
 
 export async function getUserPoints(guildId: string, userId: string): Promise<number | undefined> {
@@ -67,10 +60,15 @@ export async function getRankings(guildId: string) {
 }
 
 // get the ranking of a user
-export async function getUserRank(guildId: string, userId: string) {
+export async function getUserRank(guildId: string, userId: string) : Promise<number|null>{
   const users = await getRankings(guildId);
 
-  return users.findIndex(([id]) => id === userId) + 1;
+  const idx = users.findIndex(([id]) => id === userId);
+  if(idx === -1) {
+      return null;
+  } else {
+      return idx + 1;
+  }
 }
 
 export async function incrementUserPoints(
