@@ -1,6 +1,6 @@
 import { CommandInteraction, Client, Interaction } from "discord.js";
 import { Command } from "../command";
-import {displayErrorMessage} from "../utils"
+import { displayErrorMessage } from "../utils";
 
 const handleCommand = async (
   client: Client,
@@ -15,9 +15,12 @@ const handleCommand = async (
 
   try {
     await command.execute(client, interaction);
-  } catch(e) {
+  } catch (e) {
     console.log(e);
-    await displayErrorMessage(interaction, "An internal error occured while executing this command.");
+    await displayErrorMessage(
+      interaction,
+      "An internal error occurred while executing this command."
+    );
   }
 };
 

@@ -26,7 +26,7 @@ export async function incrementSingleUserPoints(
   amount: number
 ) {
   if (!interaction.guildId) {
-    await displayErrorMessage(interaction, "You can't give eclips in a DM!");
+    await displayErrorMessage(interaction, "You can't give E-Clips in a DM!");
     return;
   }
 
@@ -48,7 +48,7 @@ export async function incrementSingleUserPoints(
       iconURL: user.avatarURL() || user.defaultAvatarURL
     })
     .setDescription(
-      `${amountMagnitude} eclip${
+      `${amountMagnitude} E-Clip${
         amountMagnitude === 1 ? "" : "s"
       } ${changePhrase} <@${user.id}>'s balance!`
     )
@@ -103,7 +103,7 @@ export async function incrementRolePoints(
     .setColor("#0B0056")
     .setTitle("E-Clip Transaction Complete")
     .setDescription(
-      `${amountMagnitude} point${
+      `${amountMagnitude} E-Clip${
         amountMagnitude === 1 ? "" : "s"
       } ${changePhrase}:\n${userListStr}`
     )

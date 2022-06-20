@@ -15,7 +15,7 @@ export default (client: Client, commands: Command[]): void => {
       for (const [, member] of await guild.members.fetch()) {
         await registerUserIfNotExists(guild.id, member.user.id);
       }
-    };
+    }
 
     client.user.setActivity("your E-Clips!", { type: "WATCHING" });
   });

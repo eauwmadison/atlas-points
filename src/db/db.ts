@@ -1,8 +1,6 @@
 import { cert, initializeApp, ServiceAccount } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 
-import { Guild } from "discord.js";
-
 import serviceAccountKey from "../../serviceAccountKey.json";
 
 // initialize Firebase
@@ -32,7 +30,7 @@ export async function registerGuildIfNotExists(guildId: string) {
   console.log(`Attempting to register Guild ${guildId} in database.`);
 
   const guildDoc = db.doc(`guilds/${guildId}`);
-  return await db.runTransaction(async (transaction) => {
+  return db.runTransaction(async (transaction) => {
     const guildDocData = await transaction.get(guildDoc);
     if (guildDocData.exists) {
       console.log(`guild already exists: ${guildId}`);
@@ -44,7 +42,10 @@ export async function registerGuildIfNotExists(guildId: string) {
   });
 }
 
-export async function getUserPoints(guildId: string, userId: string): Promise<number | undefined> {
+export async function getUserPoints(
+  guildId: string,
+  userId: string
+): Promise<number | undefined> {
   const user = await db.doc(`guilds/${guildId}/users/${userId}`).get();
   return user.data()?.points;
 }
@@ -60,15 +61,15 @@ export async function getRankings(guildId: string) {
 }
 
 // get the ranking of a user
-export async function getUserRank(guildId: string, userId: string) : Promise<number|null>{
+export async function getUserRank(
+  guildId: string,
+  userId: string
+): Promise<number | null> {
   const users = await getRankings(guildId);
 
-  const idx = users.findIndex(([id]) => id === userId);
-  if(idx === -1) {
-      return null;
-  } else {
-      return idx + 1;
-  }
+  const index = users.findIndex(([id]) => id === userId);
+
+  return index === -1 ? null : index + 1;
 }
 
 export async function incrementUserPoints(

@@ -4,7 +4,6 @@ import { getUserPoints, givePoints } from "../db/db";
 import { Command } from "../command";
 import { displayErrorMessage } from "../utils";
 
-
 const Give: Command = {
   name: "give",
   description: "transfer points to another user",
@@ -30,7 +29,10 @@ const Give: Command = {
     const recipient = interaction.options.getUser("recipient");
 
     if (!amount) {
-      await displayErrorMessage(interaction, "Please specify the number of E-Clips you wish to give");
+      await displayErrorMessage(
+        interaction,
+        "Please specify the number of E-Clips you wish to give"
+      );
       return;
     }
 
@@ -52,7 +54,12 @@ const Give: Command = {
     const roles = await interaction.guild.roles.fetch();
     const members = await interaction.guild.members.fetch();
 
-    const cohortTags = ["June 12-23", "July 3-14", "July 17-28", "August 14-25"];
+    const cohortTags = [
+      "June 12-23",
+      "July 3-14",
+      "July 17-28",
+      "August 14-25"
+    ];
 
     // check if both recipient has same time tag as
 
@@ -74,7 +81,7 @@ const Give: Command = {
     if (cohortRoleId !== null) {
       for (const [, guildMember] of members) {
         if (guildMember.user.id === recipient.id) {
-          for (const [id,] of guildMember.roles.cache) {
+          for (const [id] of guildMember.roles.cache) {
             if (id === cohortRoleId) {
               permitted = true;
               break;
@@ -85,7 +92,10 @@ const Give: Command = {
     }
 
     if (!permitted) {
-      await displayErrorMessage(interaction, "You can only give E-Clips to people in your cohort!");
+      await displayErrorMessage(
+        interaction,
+        "You can only give E-Clips to people in your cohort!"
+      );
       return;
     }
 
@@ -110,7 +120,8 @@ const Give: Command = {
         iconURL: donor.avatarURL() || donor.defaultAvatarURL
       })
       .setDescription(
-        `<@${donor.id}> gave ${amountGiven} E-Clip${amountGiven === 1 ? "" : "s"
+        `<@${donor.id}> gave ${amountGiven} E-Clip${
+          amountGiven === 1 ? "" : "s"
         } to <@${recipient.id}>`
       )
       .addFields(

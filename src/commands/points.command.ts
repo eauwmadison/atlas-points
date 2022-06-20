@@ -12,7 +12,7 @@ const Points: Command = {
       name: "user",
       description: "the user to target",
       type: "USER"
-    },
+    }
   ],
   execute: async (_client: Client, interaction: CommandInteraction) => {
     const user = interaction.options.getUser("user") || interaction.user;

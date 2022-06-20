@@ -55,9 +55,12 @@ const Add: Command = {
       }
     }
 
-    if(!permitted) {
-        await displayErrorMessage( interaction, "Only an Instructor can add or subtract points directly");
-        return;
+    if (!permitted) {
+      await displayErrorMessage(
+        interaction,
+        "Only an Instructor can add or subtract points directly"
+      );
+      return;
     }
 
     if (amount === null || amount < 0 || amount > 1024 ** 3) {

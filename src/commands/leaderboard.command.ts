@@ -39,7 +39,7 @@ const Leaderboard: Command = {
       })
       .setThumbnail(
         guild.iconURL() ||
-        "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
+          "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
       )
       .setDescription(list)
       .setTimestamp(new Date())
