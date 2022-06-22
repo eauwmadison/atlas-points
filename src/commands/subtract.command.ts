@@ -20,6 +20,7 @@ const Subtract: Command = {
       description: "the number of E-Clips to subtract",
       type: "INTEGER",
       minValue: 0,
+      maxValue: 1024 ** 3,
       required: true
     },
     {
@@ -43,6 +44,13 @@ const Subtract: Command = {
       return;
     }
 
+    // will never be reached because `required` is true in options[]
+    // only for type safety
+    if (!amount) {
+      await displayErrorMessage(interaction, "Must specify an amount");
+      return;
+    }
+
     const permitted = await checkPermissionRole(interaction);
 
     if (!permitted) {
@@ -55,24 +63,16 @@ const Subtract: Command = {
       return;
     }
 
-    if (amount === null || amount < 0 || amount > 1024 ** 3) {
+    if (role === null) {
+      const target = user ?? interaction.user;
+      await incrementSingleUserPoints(interaction, target, -amount);
+    } else if (user === null) {
+      await incrementRolePoints(interaction, role, -amount);
+    } else {
       await displayErrorMessage(
         interaction,
-        "amount must be greater than 0 and less than 2^30"
+        "Can't target a user and role at the same time time"
       );
-    } else {
-      const incAmount = -amount;
-      if (role === null) {
-        const target = user ?? interaction.user;
-        await incrementSingleUserPoints(interaction, target, incAmount);
-      } else if (user === null) {
-        await incrementRolePoints(interaction, role, incAmount);
-      } else {
-        await displayErrorMessage(
-          interaction,
-          "Can't target a user and role at the same time time"
-        );
-      }
     }
   }
 };
