@@ -7,6 +7,7 @@ import Add from "./commands/add.command";
 import Subtract from "./commands/subtract.command";
 import Give from "./commands/give.command";
 import Leaderboard from "./commands/leaderboard.command";
+import Configure from "./commands/configure.command";
 import Ping from "./commands/ping.command";
 
 import ready from "./listeners/ready.listener";
@@ -24,12 +25,14 @@ const client = new Client({
   ]
 });
 
+// prettier-ignore
 const commands: Command[] = [
-  Points, 
-  Add, 
-  Subtract, 
-  Give, 
-  Leaderboard, 
+  Points,
+  Add,
+  Subtract,
+  Give,
+  Leaderboard,
+  Configure,
   Ping
 ];
 

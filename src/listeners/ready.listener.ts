@@ -9,13 +9,20 @@ export default (client: Client, commands: Command[]): void => {
     }
 
     console.log(`Logged in as ${client.user.tag} with ID ${client.user.id}!`);
-    for (const [, guild] of client.guilds.cache) {
+
+    client.guilds.cache.forEach(async (guild) => {
+      // register commands from passed array of Command
       await client.application?.commands.set(commands, guild.id);
+
+      // register guild
+      // TODO: add listener for "guildAdd"
       await registerGuildIfNotExists(guild.id);
-      for (const [, member] of await guild.members.fetch()) {
+
+      // register each member
+      (await guild.members.fetch()).forEach(async (member) => {
         await registerUserIfNotExists(guild.id, member.user.id);
-      }
-    }
+      });
+    });
 
     client.user.setActivity("your E-Clips!", { type: "WATCHING" });
   });

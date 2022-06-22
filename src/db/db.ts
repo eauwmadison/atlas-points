@@ -15,11 +15,13 @@ export async function registerUserIfNotExists(guildId: string, userId: string) {
   const neededToCreate = await db.runTransaction(async (transaction) => {
     const userDocData = await transaction.get(userDoc);
     if (userDocData.exists) {
-      console.log(`already exists: user ${userId} in guild ${guildId}`);
+      console.log(`ALREADY EXISTS: User ${userId} in Guild ${guildId}`);
       return false;
     }
-    await transaction.create(userDoc, { points: 0 });
-    console.log(`created: user ${userId} in guild ${guildId}`);
+
+    transaction.create(userDoc, { points: 0 });
+
+    console.log(`REGISTERED: User ${userId} in Guild ${guildId}`);
     return true;
   });
 
@@ -33,11 +35,11 @@ export async function registerGuildIfNotExists(guildId: string) {
   return db.runTransaction(async (transaction) => {
     const guildDocData = await transaction.get(guildDoc);
     if (guildDocData.exists) {
-      console.log(`guild already exists: ${guildId}`);
+      console.log(`ALREADY EXISTS: Guild ${guildId}`);
       return false;
     }
     transaction.create(guildDoc, {});
-    console.log(`created guild: ${guildId}`);
+    console.log(`REGISTERED: Guild ${guildId}`);
     return true;
   });
 }
