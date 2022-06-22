@@ -138,7 +138,7 @@ const Give: Command = {
       )
       .setTimestamp(new Date())
       .setFooter({
-        text: "Atlas E-Clip Bot",
+        text: "Atlas Points",
         iconURL:
           "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
       });

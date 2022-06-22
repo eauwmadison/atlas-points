@@ -1,11 +1,13 @@
 import { CommandInteraction, Client, Role } from "discord.js";
 import {
+  checkPermissionRole,
   displayErrorMessage,
   incrementRolePoints,
   incrementSingleUserPoints
 } from "../utils";
 
 import { Command } from "../command";
+import { getPermissionRoleName } from "../db/db";
 
 const Add: Command = {
   name: "add",
@@ -36,29 +38,19 @@ const Add: Command = {
     const user = interaction.options.getUser("user");
     const role = interaction.options.getRole("role") as Role | null;
 
-    if (interaction.guild === null) {
-      await displayErrorMessage(interaction, "Cannot give points in a DM");
+    if (!interaction.guild) {
+      await displayErrorMessage(interaction, "Cannot add E-Clips in a DM");
       return;
     }
 
-    const roles = await interaction.guild.roles.fetch();
-    const members = await interaction.guild.members.fetch();
-
-    let permitted = false;
-    for (const [, guildMember] of members) {
-      if (guildMember.user.id === interaction.user.id) {
-        for (const [, role] of guildMember.roles.cache) {
-          if (role.name === "Instructor") {
-            permitted = true;
-          }
-        }
-      }
-    }
+    const permitted = await checkPermissionRole(interaction);
 
     if (!permitted) {
       await displayErrorMessage(
         interaction,
-        "Only an Instructor can add or subtract points directly"
+        `Only members with the role "${await getPermissionRoleName(
+          interaction.guild.id
+        )}" can add E-Clips directly.`
       );
       return;
     }

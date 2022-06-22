@@ -1,6 +1,25 @@
 import { CommandInteraction, MessageEmbed, Role, User } from "discord.js";
 
-import { incrementUserPoints, getUserPoints } from "./db/db";
+import {
+  incrementUserPoints,
+  getUserPoints,
+  getPermissionRoleName
+} from "./db/db";
+
+export async function checkPermissionRole(
+  interaction: CommandInteraction
+): Promise<boolean> {
+  // interaction must be from guild for checking roles
+  if (!interaction.guild) {
+    return false;
+  }
+
+  const permissionRoleName = await getPermissionRoleName(interaction.guild.id);
+
+  return (
+    await interaction.guild.members.fetch(interaction.user.id)
+  ).roles.cache.some((role) => role.name === permissionRoleName);
+}
 
 export async function displayErrorMessage(
   interaction: CommandInteraction,
@@ -59,7 +78,7 @@ export async function incrementSingleUserPoints(
     })
     .setTimestamp(new Date())
     .setFooter({
-      text: "Atlas E-Clip Bot",
+      text: "Atlas Points",
       iconURL:
         "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
     });
@@ -109,7 +128,7 @@ export async function incrementRolePoints(
     )
     .setTimestamp(new Date())
     .setFooter({
-      text: "Atlas E-Clip Bot",
+      text: "Atlas Points",
       iconURL:
         "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
     });

@@ -32,7 +32,7 @@ const Leaderboard: Command = {
       .setColor("#0B0056")
       .setTitle(`Leaderboard for ${guild.name}`)
       .setAuthor({
-        name: "Atlas E-Clip Bot",
+        name: "Atlas Points",
         iconURL:
           "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png",
         url: "https://atlasfellowship.org"
@@ -44,7 +44,7 @@ const Leaderboard: Command = {
       .setDescription(list)
       .setTimestamp(new Date())
       .setFooter({
-        text: "Atlas E-Clip Bot",
+        text: "Atlas Points",
         iconURL:
           "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
       });

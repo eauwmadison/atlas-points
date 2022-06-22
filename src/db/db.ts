@@ -38,10 +38,17 @@ export async function registerGuildIfNotExists(guildId: string) {
       console.log(`ALREADY EXISTS: Guild ${guildId}`);
       return false;
     }
-    transaction.create(guildDoc, {});
+    transaction.create(guildDoc, { permissionRoleName: "Instructor" });
     console.log(`REGISTERED: Guild ${guildId}`);
     return true;
   });
+}
+
+export async function getPermissionRoleName(
+  guildId: string
+): Promise<string | undefined> {
+  const guild = await db.doc(`guilds/${guildId}`).get();
+  return guild.data()?.permissionRoleName;
 }
 
 export async function getUserPoints(
