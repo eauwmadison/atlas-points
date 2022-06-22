@@ -2,7 +2,8 @@ import { CommandInteraction, Client, MessageEmbed } from "discord.js";
 import { getRankings } from "../db/db";
 
 import { Command } from "../command";
-import { displayErrorMessage } from "../utils";
+
+import displayErrorMessage from "../utils/displayErrorMessage.util";
 
 const Leaderboard: Command = {
   name: "leaderboard",

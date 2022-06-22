@@ -1,13 +1,12 @@
 import { CommandInteraction, Client, Role } from "discord.js";
-import {
-  checkPermissionRole,
-  displayErrorMessage,
-  incrementRolePoints,
-  incrementSingleUserPoints
-} from "../utils";
 
 import { Command } from "../command";
 import { getPermissionRoleName } from "../db/db";
+
+import checkPermissionRole from "../utils/checkPermissionRole.util";
+import displayErrorMessage from "../utils/displayErrorMessage.util";
+import incrementRolePoints from "../utils/incrementRolePoints.util";
+import incrementSingleUserPoints from "../utils/incrementSingleUserPoints.util";
 
 const Add: Command = {
   name: "add",

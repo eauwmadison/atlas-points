@@ -1,8 +1,9 @@
 import { CommandInteraction, Client, MessageEmbed } from "discord.js";
 
-import { getUserPoints, givePoints } from "../db/db";
 import { Command } from "../command";
-import { displayErrorMessage } from "../utils";
+import { getUserPoints, givePoints } from "../db/db";
+
+import displayErrorMessage from "../utils/displayErrorMessage.util";
 
 const Give: Command = {
   name: "give",

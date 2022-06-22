@@ -1,9 +1,10 @@
 import { CommandInteraction, Client } from "discord.js";
 
-import { checkPermissionRole, displayErrorMessage } from "../utils";
-
 import { Command } from "../command";
 import { getPermissionRoleName } from "../db/db";
+
+import checkPermissionRole from "../utils/checkPermissionRole.util";
+import displayErrorMessage from "../utils/displayErrorMessage.util";
 
 const Configure: Command = {
   name: "configure",
