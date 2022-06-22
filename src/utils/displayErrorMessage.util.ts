@@ -1,6 +1,9 @@
 import { CommandInteraction, MessageEmbed } from "discord.js";
 
-export default async function displayErrorMessage (interaction: CommandInteraction, description: string) {
+export default async function displayErrorMessage(
+  interaction: CommandInteraction,
+  description: string
+) {
   const errorSummary = new MessageEmbed()
     .setColor("#EF5D60")
     .setTitle("Error!")
@@ -13,4 +16,4 @@ export default async function displayErrorMessage (interaction: CommandInteracti
     });
 
   await interaction.reply({ embeds: [errorSummary] });
-};
+}
