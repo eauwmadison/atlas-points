@@ -15,7 +15,7 @@ const handleCommand = async (
   }
 
   try {
-    await command.execute(client, interaction);
+    command.execute(client, interaction);
   } catch (e) {
     console.log(e);
     await displayErrorMessage(
@@ -29,6 +29,10 @@ export default (client: Client, commands: Command[]): void => {
   client.on("interactionCreate", async (interaction: Interaction) => {
     if (interaction.isCommand()) {
       await handleCommand(client, commands, interaction);
+    } else if (interaction.isRepliable()) {
+      interaction.reply("Interaction type is not yet supported.");
+    } else {
+      console.log("Encountered unhandled interaction: ", interaction.type);
     }
   });
 };
