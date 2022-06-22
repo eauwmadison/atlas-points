@@ -18,7 +18,7 @@ const Subtract: Command = {
       name: "amount",
       description: "the number of E-Clips to subtract",
       type: "INTEGER",
-      minValue: 0,
+      minValue: 1,
       maxValue: 1024 ** 3,
       required: true
     },

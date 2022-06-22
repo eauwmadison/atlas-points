@@ -18,7 +18,7 @@ const Add: Command = {
       name: "amount",
       description: "the number of points to add",
       type: "INTEGER",
-      minValue: 0,
+      minValue: 1,
       maxValue: 1024 ** 3,
       required: true
     },
