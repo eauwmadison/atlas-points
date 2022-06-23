@@ -1,7 +1,12 @@
-import { CommandInteraction, Client } from "discord.js";
+import { CommandInteraction, Client, Role, MessageEmbed } from "discord.js";
 
 import { Command } from "../command";
-import { getPermissionRoleName } from "../db/db";
+import {
+  clearLogChannel,
+  getPermissionRoleName,
+  setLogChannel,
+  setPermissionRoleName
+} from "../db/db";
 
 import checkPermissionRole from "../utils/checkPermissionRole.util";
 import displayErrorMessage from "../utils/displayErrorMessage.util";
@@ -61,7 +66,63 @@ const Configure: Command = {
       return;
     }
 
-    await interaction.reply("Not yet configured.");
+    if (interaction.options.getSubcommand() === "log") {
+      const channel = interaction.options.getChannel("channel");
+
+      if (!channel) {
+        await clearLogChannel(interaction.guild.id);
+
+        const summary = new MessageEmbed()
+          .setColor("#0B0056")
+          .setTitle("Configuration Updated")
+          .setDescription(
+            "*No channel supplied.*\n\nLogging has been disabled."
+          )
+          .setFooter({
+            text: "Atlas E-Clips",
+            iconURL:
+              "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
+          })
+          .setTimestamp(new Date());
+
+        await interaction.reply({ embeds: [summary] });
+        return;
+      }
+
+      await setLogChannel(interaction.guild.id, channel.id);
+
+      const summary = new MessageEmbed()
+        .setColor("#0B0056")
+        .setTitle("Configuration Updated")
+        .setDescription(`Logs will now be sent to <#${channel.id}>.`)
+        .setFooter({
+          text: "Atlas E-Clips",
+          iconURL:
+            "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
+        })
+        .setTimestamp(new Date());
+
+      await interaction.reply({ embeds: [summary] });
+    }
+
+    if (interaction.options.getSubcommand() === "role") {
+      const role = interaction.options.getRole("role") as Role;
+
+      await setPermissionRoleName(interaction.guild.id, role.name);
+
+      const summary = new MessageEmbed()
+        .setColor(role.color)
+        .setTitle("Configuration Updated")
+        .setDescription(`Role updated to <@&${role.id}>.`)
+        .setFooter({
+          text: "Atlas E-Clips",
+          iconURL:
+            "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
+        })
+        .setTimestamp(new Date());
+
+      await interaction.reply({ embeds: [summary] });
+    }
   }
 };
 

@@ -64,9 +64,9 @@ const Subtract: Command = {
 
     if (role === null) {
       const target = user ?? interaction.user;
-      await incrementSingleUserPoints(interaction, target, -amount);
+      await incrementSingleUserPoints(_client, interaction, target, -amount);
     } else if (user === null) {
-      await incrementRolePoints(interaction, role, -amount);
+      await incrementRolePoints(_client, interaction, role, -amount);
     } else {
       await displayErrorMessage(
         interaction,

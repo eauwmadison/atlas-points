@@ -1,5 +1,5 @@
 import { cert, initializeApp, ServiceAccount } from "firebase-admin/app";
-import { getFirestore } from "firebase-admin/firestore";
+import { FieldValue, getFirestore } from "firebase-admin/firestore";
 
 import serviceAccountKey from "../../serviceAccountKey.json";
 
@@ -44,11 +44,38 @@ export async function registerGuildIfNotExists(guildId: string) {
   });
 }
 
+export async function getLogChannel(
+  guildId: string
+): Promise<string | undefined> {
+  const guild = await db.doc(`guilds/${guildId}/`).get();
+  return guild.data()?.logChannelId;
+}
+
+export async function setLogChannel(
+  guildId: string,
+  logChannelId: string
+): Promise<void> {
+  await db.doc(`guilds/${guildId}/`).set({ logChannelId }, { merge: true });
+}
+
+export async function clearLogChannel(guildId: string): Promise<void> {
+  await db
+    .doc(`guilds/${guildId}/`)
+    .update({ logChannelId: FieldValue.delete() });
+}
+
 export async function getPermissionRoleName(
   guildId: string
 ): Promise<string | undefined> {
   const guild = await db.doc(`guilds/${guildId}`).get();
   return guild.data()?.permissionRoleName;
+}
+
+export async function setPermissionRoleName(
+  guildId: string,
+  permissionRoleName: string
+): Promise<void> {
+  await db.doc(`guilds/${guildId}/`).set({ permissionRoleName });
 }
 
 export async function getUserPoints(
