@@ -27,7 +27,7 @@ export default async function incrementRolePoints(
   const changePhrase = amount > 0 ? "added to" : "removed from";
 
   // then output the results
-  const affectedUsers: (string | number | undefined)[][] = [];
+  const affectedUsers: [string, number | undefined][] = [];
 
   role.members.forEach(async (member) => {
     const { id } = member.user;
