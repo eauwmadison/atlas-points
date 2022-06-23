@@ -32,12 +32,6 @@ const Leaderboard: Command = {
     const guildSummary = new MessageEmbed()
       .setColor("#0B0056")
       .setTitle(`Leaderboard for ${guild.name}`)
-      .setAuthor({
-        name: "Atlas Points",
-        iconURL:
-          "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png",
-        url: "https://atlasfellowship.org"
-      })
       .setThumbnail(
         guild.iconURL() ||
           "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
@@ -45,7 +39,7 @@ const Leaderboard: Command = {
       .setDescription(list)
       .setTimestamp(new Date())
       .setFooter({
-        text: "Atlas Points",
+        text: "Atlas E-Clips",
         iconURL:
           "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
       });

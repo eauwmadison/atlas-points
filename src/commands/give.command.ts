@@ -139,7 +139,7 @@ const Give: Command = {
       )
       .setTimestamp(new Date())
       .setFooter({
-        text: "Atlas Points",
+        text: "Atlas E-Clips",
         iconURL:
           "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
       });

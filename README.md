@@ -1,7 +1,7 @@
 <img align="left" src="/public/logo.png" height="200" width="200">
 <br/> 
 
-# Atlas Points
+# Atlas E-Clips
 
 Atlas Fellowship Discord bot to track points.
 <br/><br/><br/>
