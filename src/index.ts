@@ -12,6 +12,7 @@ import Ping from "./commands/ping.command";
 
 import ready from "./listeners/ready.listener";
 import interactionCreate from "./listeners/interactionCreate.listener";
+import guildCreate from "./listeners/guildCreate.listener";
 import guildMemberAdd from "./listeners/guildMemberAdd.listener";
 
 dotenv.config();
@@ -38,6 +39,7 @@ const commands: Command[] = [
 
 ready(client, commands);
 interactionCreate(client, commands);
+guildCreate(client);
 guildMemberAdd(client);
 
 // Login to Discord with your client's token
