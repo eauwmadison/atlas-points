@@ -15,7 +15,6 @@ export default (client: Client, commands: Command[]): void => {
       await client.application?.commands.set(commands, guild.id);
 
       // register guild
-      // TODO: add listener for "guildAdd"
       await registerGuildIfNotExists(guild.id);
 
       // register each member
