@@ -39,7 +39,7 @@ const commands: Command[] = [
 
 ready(client, commands);
 interactionCreate(client, commands);
-guildCreate(client);
+guildCreate(client, commands);
 guildMemberAdd(client);
 
 // Login to Discord with your client's token
