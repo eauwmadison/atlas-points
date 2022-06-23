@@ -42,5 +42,5 @@ interactionCreate(client, commands);
 guildCreate(client, commands);
 guildMemberAdd(client);
 
-// Login to Discord with your client's token
+// login to Discord
 client.login(process.env.DISCORD_TOKEN);

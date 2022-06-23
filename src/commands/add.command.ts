@@ -70,7 +70,7 @@ const Add: Command = {
     } else {
       await displayErrorMessage(
         interaction,
-        "Can't target a user and role at the same time time"
+        "Can't target a user and role at the same time"
       );
     }
   }
