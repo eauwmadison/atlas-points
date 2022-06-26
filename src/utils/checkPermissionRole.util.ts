@@ -1,6 +1,7 @@
 import { CommandInteraction } from "discord.js";
 import { getPermissionRoleName } from "../db/db";
 
+// returns if the interaction user is entitled to use priveleged commands
 export default async function checkPermissionRole(
   interaction: CommandInteraction
 ): Promise<boolean> {
