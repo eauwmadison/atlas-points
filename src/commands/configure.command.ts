@@ -3,13 +3,11 @@ import { CommandInteraction, Client, Role, MessageEmbed } from "discord.js";
 import { Command } from "../command";
 import {
   clearLogChannel,
-  getPermissionRoleName,
   setLogChannel,
-  setPermissionRoleName
+  setModRoleId
 } from "../db/db";
 
-import checkPermissionRole from "../utils/checkPermissionRole.util";
-import displayErrorMessage from "../utils/displayErrorMessage.util";
+import { errorMessage, confirmPerms } from "../utils/displayErrorMessage.util";
 
 const Configure: Command = {
   name: "configure",
@@ -26,7 +24,8 @@ const Configure: Command = {
         {
           name: "channel",
           description: "the channel to output transaction logs to",
-          type: "CHANNEL"
+          type: "CHANNEL",
+          channelTypes: ["GUILD_TEXT"],
         }
       ]
     },
@@ -46,31 +45,19 @@ const Configure: Command = {
     }
   ],
   execute: async (_client: Client, interaction: CommandInteraction) => {
-    if (!interaction.guild) {
-      await displayErrorMessage(
-        interaction,
-        "Settings can only be configured in a server."
-      );
+    const confirmRet = await confirmPerms(interaction, "configure settings");
+    if (!confirmRet.success) {
+      await interaction.reply({ embeds: [confirmRet.reply] });
       return;
     }
 
-    const permitted = await checkPermissionRole(interaction);
-
-    if (!permitted) {
-      await displayErrorMessage(
-        interaction,
-        `Only members with the role "${await getPermissionRoleName(
-          interaction.guild.id
-        )}" can configure settings.`
-      );
-      return;
-    }
+    const guildId = confirmRet.guild.id;
 
     if (interaction.options.getSubcommand() === "log") {
       const channel = interaction.options.getChannel("channel");
 
       if (!channel) {
-        await clearLogChannel(interaction.guild.id);
+        await clearLogChannel(guildId);
 
         const summary = new MessageEmbed()
           .setColor("#0B0056")
@@ -89,7 +76,7 @@ const Configure: Command = {
         return;
       }
 
-      await setLogChannel(interaction.guild.id, channel.id);
+      await setLogChannel(guildId, channel.id);
 
       const summary = new MessageEmbed()
         .setColor("#0B0056")
@@ -108,7 +95,7 @@ const Configure: Command = {
     if (interaction.options.getSubcommand() === "role") {
       const role = interaction.options.getRole("role") as Role;
 
-      await setPermissionRoleName(interaction.guild.id, role.name);
+      await setModRoleId(guildId, role.id);
 
       const summary = new MessageEmbed()
         .setColor(role.color)

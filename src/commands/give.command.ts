@@ -3,7 +3,7 @@ import { CommandInteraction, Client, MessageEmbed } from "discord.js";
 import { Command } from "../command";
 import { getUserPoints, givePoints } from "../db/db";
 
-import displayErrorMessage from "../utils/displayErrorMessage.util";
+import {errorMessage, confirmGuild} from "../utils/displayErrorMessage.util";
 
 const Give: Command = {
   name: "give",
@@ -29,31 +29,31 @@ const Give: Command = {
     const donor = interaction.user;
     const recipient = interaction.options.getUser("recipient");
 
-    if (!amount) {
-      await displayErrorMessage(
-        interaction,
-        "Please specify the number of E-Clips you wish to give"
-      );
+    const confirmRet = await confirmGuild(interaction, "give E-Clips");
+    if(!confirmRet.success) {
+      await interaction.reply({ embeds: [confirmRet.reply] });
+      return;
+    }
+    const guild = confirmRet.guild;
+
+    if (amount === null) {
+      await interaction.reply({ embeds: [errorMessage("Must specify an amount")] });
       return;
     }
 
-    if (interaction.guild === null) {
-      await displayErrorMessage(interaction, "Cannot give E-Clips in a DM");
-      return;
-    }
 
     if (recipient === null) {
-      await displayErrorMessage(interaction, "Must specify recipient");
+      await interaction.reply({ embeds: [errorMessage("Must specify a recipient")] });
       return;
     }
 
     if (recipient.id === donor.id) {
-      await displayErrorMessage(interaction, "Cannot give to yourself");
+      await interaction.reply({ embeds: [errorMessage("Cannot give to yourself")] });
       return;
     }
 
-    const roles = await interaction.guild.roles.fetch();
-    const members = await interaction.guild.members.fetch();
+    const roles = await guild.roles.fetch();
+    const members = await guild.members.fetch();
 
     const cohortTags = [
       "June 12-23",
@@ -93,23 +93,20 @@ const Give: Command = {
     }
 
     if (!permitted) {
-      await displayErrorMessage(
-        interaction,
-        "You can only give E-Clips to people in your cohort!"
-      );
+      await interaction.reply({ embeds: [errorMessage("You can only give E-Clips to people in your cohort!")] });
       return;
     }
 
     const amountGiven = await givePoints(
-      interaction.guild.id,
+      guild.id,
       donor.id,
       recipient.id,
       amount
     );
 
-    const donorPoints = await getUserPoints(interaction.guild.id, donor.id);
+    const donorPoints = await getUserPoints(guild.id, donor.id);
     const recipientPoints = await getUserPoints(
-      interaction.guild.id,
+      guild.id,
       recipient.id
     );
 
@@ -121,7 +118,7 @@ const Give: Command = {
         iconURL: donor.avatarURL() || donor.defaultAvatarURL
       })
       .setDescription(
-        `<@${donor.id}> gave ${amountGiven} E-Clip${
+        `<@${donor.id}> gave **${amountGiven}** E-Clip${
           amountGiven === 1 ? "" : "s"
         } to <@${recipient.id}>`
       )

@@ -64,18 +64,18 @@ export async function clearLogChannel(guildId: string): Promise<void> {
     .update({ logChannelId: FieldValue.delete() });
 }
 
-export async function getPermissionRoleName(
+export async function getModRoleId(
   guildId: string
 ): Promise<string | undefined> {
   const guild = await db.doc(`guilds/${guildId}`).get();
-  return guild.data()?.permissionRoleName;
+  return guild.data()?.modRoleId;
 }
 
-export async function setPermissionRoleName(
+export async function setModRoleId(
   guildId: string,
-  permissionRoleName: string
+  modRoleId: string
 ): Promise<void> {
-  await db.doc(`guilds/${guildId}/`).set({ permissionRoleName });
+  await db.doc(`guilds/${guildId}/`).set({ modRoleId });
 }
 
 export async function getUserPoints(

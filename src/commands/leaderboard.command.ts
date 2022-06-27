@@ -3,24 +3,20 @@ import { getRankings } from "../db/db";
 
 import { Command } from "../command";
 
-import displayErrorMessage from "../utils/displayErrorMessage.util";
+import { errorMessage, confirmGuild } from "../utils/displayErrorMessage.util";
 
 const Leaderboard: Command = {
   name: "leaderboard",
   description: "Display rankings for the server",
   type: "CHAT_INPUT",
   execute: async (_client: Client, interaction: CommandInteraction) => {
-    const { guild } = interaction;
-
-    if (!guild) {
-      await displayErrorMessage(
-        interaction,
-        "This command can only be used in a server"
-      );
+    const confirmRet = await confirmGuild(interaction, "add E-Clips directly");
+    if (!confirmRet.success) {
+      await interaction.reply({ embeds: [confirmRet.reply] });
       return;
     }
 
-    const results = await getRankings(guild.id);
+    const results = await getRankings(confirmRet.guild.id);
 
     const list = results
       .map(
@@ -31,11 +27,7 @@ const Leaderboard: Command = {
 
     const guildSummary = new MessageEmbed()
       .setColor("#0B0056")
-      .setTitle(`Leaderboard for ${guild.name}`)
-      .setThumbnail(
-        guild.iconURL() ||
-          "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
-      )
+      .setTitle(`Leaderboard`)
       .setDescription(list)
       .setTimestamp(new Date())
       .setFooter({

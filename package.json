@@ -9,6 +9,7 @@
   "scripts": {
     "start": "node dist/index.js",
     "build": "swc src -d dist",
+    "check": "tsc",
     "dev": "nodemon",
     "format": "prettier --write .",
     "lint": "eslint .",

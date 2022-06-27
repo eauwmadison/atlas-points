@@ -1,25 +1,15 @@
 import { CommandInteraction, User, MessageEmbed, Client } from "discord.js";
 import { incrementUserPoints, getUserPoints, getLogChannel } from "../db/db";
 
-import displayErrorMessage from "./displayErrorMessage.util";
-
 export default async function incrementSingleUserPoints(
   client: Client,
-  interaction: CommandInteraction,
+  guildId: string,
   user: User,
   amount: number
-) {
-  if (!interaction.guild) {
-    await displayErrorMessage(interaction, "You can't give E-Clips in a DM!");
-    return;
-  }
+): Promise<MessageEmbed> {
 
   // first change the user's points
-  const amountChange = await incrementUserPoints(
-    interaction.guild.id,
-    user.id,
-    amount
-  );
+  const amountChange = await incrementUserPoints(guildId, user.id, amount);
 
   const amountMagnitude = Math.abs(amountChange);
   const changePhrase = amount > 0 ? "added to" : "removed from";
@@ -32,13 +22,12 @@ export default async function incrementSingleUserPoints(
       iconURL: user.avatarURL() || user.defaultAvatarURL
     })
     .setDescription(
-      `**${amountMagnitude}** E-Clip${
-        amountMagnitude === 1 ? "" : "s"
+      `**${amountMagnitude}** E-Clip${amountMagnitude === 1 ? "" : "s"
       } ${changePhrase} <@${user.id}>'s balance!`
     )
     .addFields({
       name: "New Balance",
-      value: `${await getUserPoints(interaction.guild.id, user.id)}`,
+      value: `${await getUserPoints(guildId, user.id)}`,
       inline: true
     })
     .setTimestamp(new Date())
@@ -49,7 +38,7 @@ export default async function incrementSingleUserPoints(
     });
 
   // log to configured channel
-  const logChannelId = await getLogChannel(interaction.guild.id);
+  const logChannelId = await getLogChannel(guildId);
 
   if (logChannelId) {
     const logChannel = client.channels.cache.get(logChannelId);
@@ -58,5 +47,5 @@ export default async function incrementSingleUserPoints(
     }
   }
 
-  await interaction.reply({ embeds: [transactionSummary] });
+  return transactionSummary;
 }
