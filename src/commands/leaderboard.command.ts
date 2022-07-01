@@ -19,6 +19,7 @@ const Leaderboard: Command = {
     const results = await getRankings(confirmRet.guild.id);
 
     const list = results
+      .slice(0, 10)
       .map(
         (result: any, index) =>
           `${index + 1}) <@${result[0]}> — **${result[1].points}** E-Clips`
