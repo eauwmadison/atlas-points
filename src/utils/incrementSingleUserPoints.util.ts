@@ -1,11 +1,12 @@
 import { CommandInteraction, User, MessageEmbed, Client } from "discord.js";
-import { incrementUserPoints, getUserPoints, getLogChannel } from "../db/db";
+import { incrementUserPoints, getUserPoints } from "../db/db";
 
 export default async function incrementSingleUserPoints(
   client: Client,
   guildId: string,
   user: User,
-  amount: number
+  amount: number,
+  memo: string
 ): Promise<MessageEmbed> {
 
   // first change the user's points
@@ -13,6 +14,8 @@ export default async function incrementSingleUserPoints(
 
   const amountMagnitude = Math.abs(amountChange);
   const changePhrase = amount > 0 ? "added to" : "removed from";
+
+  const memoString = memo === "" ? "" : `\n\nMemo: **${memo}**`;
 
   const transactionSummary = new MessageEmbed()
     .setColor("#53DD6C")
@@ -23,7 +26,8 @@ export default async function incrementSingleUserPoints(
     })
     .setDescription(
       `**${amountMagnitude}** E-Clip${amountMagnitude === 1 ? "" : "s"
-      } ${changePhrase} <@${user.id}>'s balance!`
+      } ${changePhrase} <@${user.id
+      }>'s balance!${memoString}`
     )
     .addFields({
       name: "New Balance",
@@ -37,15 +41,6 @@ export default async function incrementSingleUserPoints(
         "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
     });
 
-  // log to configured channel
-  const logChannelId = await getLogChannel(guildId);
-
-  if (logChannelId) {
-    const logChannel = client.channels.cache.get(logChannelId);
-    if (logChannel && logChannel.isText()) {
-      logChannel.send({ embeds: [transactionSummary] });
-    }
-  }
 
   return transactionSummary;
 }

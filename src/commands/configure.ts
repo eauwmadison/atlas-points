@@ -32,7 +32,7 @@ const Configure: Command = {
     {
       name: "role",
       description:
-        'Configure the role which has permission to modify points and settings. Default is "Instructor".',
+        'Configure the role which has permission to modify points and settings.',
       type: "SUB_COMMAND",
       options: [
         {

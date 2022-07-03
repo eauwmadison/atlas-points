@@ -16,15 +16,19 @@ const Leaderboard: Command = {
       return;
     }
 
-    const results = await getRankings(confirmRet.guild.id);
+    const results  = await getRankings(confirmRet.guild.id);
 
-    const list = results
+    let list = results
       .slice(0, 10)
       .map(
         (result: any, index) =>
           `${index + 1}) <@${result[0]}> — **${result[1].points}** E-Clips`
       )
       .join("\n");
+
+    if(results.length > 10) {
+        list += `\n\n**Truncated - ${results.length - 10} more**`;
+    }
 
     const guildSummary = new MessageEmbed()
       .setColor("#0B0056")

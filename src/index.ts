@@ -2,18 +2,18 @@ import dotenv from "dotenv";
 import { Client, Intents } from "discord.js";
 
 import { Command } from "./command";
-import Points from "./commands/points.command";
-import Add from "./commands/add.command";
-import Subtract from "./commands/subtract.command";
-import Give from "./commands/give.command";
-import Leaderboard from "./commands/leaderboard.command";
-import Configure from "./commands/configure.command";
-import Ping from "./commands/ping.command";
+import Balance from "./commands/balance";
+import Add from "./commands/add";
+import Subtract from "./commands/subtract";
+import Pay from "./commands/pay";
+import Leaderboard from "./commands/leaderboard";
+import Configure from "./commands/configure";
+import Ping from "./commands/ping";
 
-import ready from "./listeners/ready.listener";
-import interactionCreate from "./listeners/interactionCreate.listener";
-import guildCreate from "./listeners/guildCreate.listener";
-import guildMemberAdd from "./listeners/guildMemberAdd.listener";
+import ready from "./listeners/ready";
+import interactionCreate from "./listeners/interactionCreate";
+import guildCreate from "./listeners/guildCreate";
+import guildMemberAdd from "./listeners/guildMemberAdd";
 
 dotenv.config();
 
@@ -28,10 +28,10 @@ const client = new Client({
 
 // prettier-ignore
 const commands: Command[] = [
-  Points,
+  Balance,
   Add,
   Subtract,
-  Give,
+  Pay,
   Leaderboard,
   Configure,
   Ping

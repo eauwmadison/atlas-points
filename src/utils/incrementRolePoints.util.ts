@@ -6,16 +6,19 @@ export default async function incrementRolePoints(
   client: Client,
   guildId: string,
   role: Role,
-  amount: number
+  amount: number,
+  memo: string
 ): Promise<MessageEmbed> {
 
   // fetch all members for role
   await role.guild.members.fetch();
 
   // first increment points for each member in role
-  for(const [,member] of role.members) {
-    await incrementUserPoints(guildId, member.user.id, amount);
+  const promises = [];
+  for (const [, member] of role.members) {
+    promises.push(incrementUserPoints(guildId, member.user.id, amount));
   }
+  const incrementedAmounts = await Promise.all(promises);
 
   const amountMagnitude = Math.abs(amount);
   const changePhrase = amount > 0 ? "added to" : "removed from";
@@ -23,24 +26,31 @@ export default async function incrementRolePoints(
   // then output the results
   const affectedUsers: [string, number | undefined][] = [];
 
-  for(const [,member] of role.members) {
+  for (const [, member] of role.members) {
     const { id } = member.user;
     // TODO: fix balance to use new value rather than old one
     const balance = await getUserPoints(guildId, id);
     affectedUsers.push([id, balance]);
   }
 
-  const list = affectedUsers
+  let list = affectedUsers
     .map((user) => `⦁ <@${user[0]}> — New Balance: **${user[1]}** E-Clips`)
+    .slice(0, 10)
     .join("\n");
+
+  if (affectedUsers.length > 10) {
+    list += `\n\n**Truncated - ${affectedUsers.length - 10} more**`;
+  }
+
+  const memoString = memo === "" ? "" : `\n\nMemo: **${memo}**`;
 
   const transactionSummary = new MessageEmbed()
     .setColor(role.color)
     .setTitle("E-Clip Transaction Complete")
     .setDescription(
-      `**${amountMagnitude}** E-Clip${
-        amountMagnitude === 1 ? "" : "s"
-      } ${changePhrase} members with the role <@&${role.id}>.\n\n${list}`
+      `**${amountMagnitude}** E-Clip${amountMagnitude === 1 ? "" : "s"
+      } ${changePhrase} members with the role <@&${role.id}>.\n\n${list
+      }${memoString}`
     )
     .setTimestamp(new Date())
     .setFooter({
@@ -48,16 +58,6 @@ export default async function incrementRolePoints(
       iconURL:
         "https://storage.googleapis.com/image-bucket-atlas-points-bot/logo.png"
     });
-
-  // log to configured channel
-  const logChannelId = await getLogChannel(guildId);
-
-  if (logChannelId) {
-    const logChannel = client.channels.cache.get(logChannelId);
-    if (logChannel && logChannel.isText()) {
-      logChannel.send({ embeds: [transactionSummary] });
-    }
-  }
 
   return transactionSummary;
 }
