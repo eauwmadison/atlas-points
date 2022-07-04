@@ -3,7 +3,7 @@ import { CommandInteraction, Client, MessageEmbed } from "discord.js";
 import { Command } from "../command";
 import { getLogChannel, getUserPoints, givePoints } from "../db/db";
 
-import { errorMessage, confirmGuild } from "../utils/displayErrorMessage.util";
+import { errorMessage, confirmGuild } from "../utils/confirmPerms";
 
 const Pay: Command = {
   name: "pay",
@@ -27,6 +27,7 @@ const Pay: Command = {
       name: "memo",
       description: "note to attach alongside payment",
       type: "STRING",
+      required: true,
     }
   ],
   execute: async (_client: Client, interaction: CommandInteraction) => {
@@ -70,29 +71,26 @@ const Pay: Command = {
 
     // check if both recipient has same time tag as
 
-    // get tag of donor
-    let cohortRoleId: null | string = null;
+    // get all tags
+    let senderCohortRoleIds: string[] = [];
     for (const [, guildMember] of members) {
       if (guildMember.user.id === donor.id) {
         for (const [, role] of guildMember.roles.cache) {
           if (cohortTags.includes(role.name)) {
-            cohortRoleId = role.id;
-            break;
+            senderCohortRoleIds.push(role.id);
           }
         }
       }
     }
 
-    // check if recipient has same tag
+    // check if recipient has any of the cohort tags the sender does
     let permitted = false;
-    if (cohortRoleId !== null) {
-      for (const [, guildMember] of members) {
-        if (guildMember.user.id === recipient.id) {
-          for (const [id] of guildMember.roles.cache) {
-            if (id === cohortRoleId) {
-              permitted = true;
-              break;
-            }
+    for (const [, guildMember] of members) {
+      if (guildMember.user.id === recipient.id) {
+        for (const [id] of guildMember.roles.cache) {
+          if (senderCohortRoleIds.includes(id)) {
+            permitted = true;
+            break;
           }
         }
       }

@@ -7,7 +7,7 @@ import {
   setModRoleId
 } from "../db/db";
 
-import { errorMessage, confirmPerms } from "../utils/displayErrorMessage.util";
+import { errorMessage, confirmPerms } from "../utils/confirmPerms";
 
 const Configure: Command = {
   name: "configure",

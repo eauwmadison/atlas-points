@@ -1,7 +1,7 @@
 import { CommandInteraction, Client, Interaction } from "discord.js";
 import { Command } from "../command";
 
-import { errorMessage } from "../utils/displayErrorMessage.util";
+import { errorMessage } from "../utils/confirmPerms";
 
 const handleCommand = async (
   client: Client,

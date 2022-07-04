@@ -2,7 +2,7 @@ import { CommandInteraction, Client, MessageEmbed } from "discord.js";
 import { getUserRank, getUserPoints } from "../db/db";
 
 import { Command } from "../command";
-import { confirmGuild, confirmPerms } from "../utils/displayErrorMessage.util";
+import { confirmGuild, confirmPerms } from "../utils/confirmPerms";
 
 const Balance: Command = {
   name: "balance",

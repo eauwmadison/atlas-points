@@ -3,14 +3,14 @@ import { getRankings } from "../db/db";
 
 import { Command } from "../command";
 
-import { errorMessage, confirmGuild } from "../utils/displayErrorMessage.util";
+import { errorMessage, confirmPerms } from "../utils/confirmPerms";
 
 const Leaderboard: Command = {
   name: "leaderboard",
   description: "Display rankings for the server",
   type: "CHAT_INPUT",
   execute: async (_client: Client, interaction: CommandInteraction) => {
-    const confirmRet = await confirmGuild(interaction, "add E-Clips directly");
+    const confirmRet = await confirmPerms(interaction, "view the leaderboard");
     if (!confirmRet.success) {
       await interaction.reply({ embeds: [confirmRet.reply] });
       return;

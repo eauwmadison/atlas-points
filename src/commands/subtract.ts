@@ -3,9 +3,9 @@ import { CommandInteraction, Client, Role } from "discord.js";
 import { Command } from "../command";
 import { getLogChannel } from "../db/db";
 
-import { errorMessage, confirmPerms } from "../utils/displayErrorMessage.util";
-import incrementRolePoints from "../utils/incrementRolePoints.util";
-import incrementSingleUserPoints from "../utils/incrementSingleUserPoints.util";
+import { errorMessage, confirmPerms } from "../utils/confirmPerms";
+import incrementRolePoints from "../utils/incrementRolePoints";
+import incrementSingleUserPoints from "../utils/incrementSingleUserPoints";
 
 const Subtract: Command = {
   name: "subtract",
@@ -22,6 +22,12 @@ const Subtract: Command = {
       required: true
     },
     {
+      name: "memo",
+      description: "note to attach",
+      type: "STRING",
+      required: true,
+    },
+    {
       name: "user",
       description: "the user to target",
       type: "USER"
@@ -31,11 +37,7 @@ const Subtract: Command = {
       description: "the role to target",
       type: "ROLE"
     },
-    {
-      name: "memo",
-      description: "note to attach",
-      type: "STRING"
-    }
+    
   ],
   execute: async (_client: Client, interaction: CommandInteraction) => {
     const amount = interaction.options.getInteger("amount");
