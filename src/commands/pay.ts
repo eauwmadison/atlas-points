@@ -101,6 +101,38 @@ const Pay: Command = {
       return;
     }
 
+
+
+    let donorTrader = false;
+    let recipientTrader = false;
+    for (const [, guildMember] of members) {
+      if (guildMember.user.id === recipient.id) {
+        for (const [,role] of guildMember.roles.cache) {
+          if (role.name === "Trader") {
+            recipientTrader = true;
+          }
+        }
+      }
+      if (guildMember.user.id === donor.id) {
+        for (const [,role] of guildMember.roles.cache) {
+          if (role.name === "Trader") {
+            donorTrader = true;
+          }
+        }
+      }
+    }
+
+    if (!recipientTrader) {
+      await interaction.reply({ embeds: [errorMessage("The recipient doesn't have the Trader tag.")] });
+      return;
+    }
+
+
+    if (!donorTrader) {
+      await interaction.reply({ embeds: [errorMessage("You don't have the Trader tag.")] });
+      return;
+    }
+
     const amountPaid = await givePoints(
       guild.id,
       donor.id,
